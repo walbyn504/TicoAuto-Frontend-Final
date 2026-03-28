@@ -8,20 +8,20 @@ async function registrarUsuario() {
     const correo = document.getElementById('correo').value.trim();
     const contrasenna = document.getElementById('contrasenna').value.trim();
 
-     if (!nombre || !primerApellido || !segundoApellido || !telefono || !correo || !contrasenna) {
-        alert('Todos los campos son obligatorios');
+    if (!nombre || !primerApellido || !segundoApellido || !telefono || !correo || !contrasenna) {
+        mostrarMensaje('Todos los campos son obligatorios', 'error');
         return;
     }
 
     const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!regexCorreo.test(correo)) {
-        alert("El formato del correo no es válido");
+        mostrarMensaje('El formato del correo no es válido', 'error');
         return;
     }
 
     const regexTelefono = /^[0-9]{8,}$/;
     if (!regexTelefono.test(telefono)) {
-        alert("El teléfono debe tener al menos 8 dígitos");
+        mostrarMensaje('El teléfono debe tener al menos 8 dígitos', 'error');
         return;
     }
 
@@ -32,7 +32,10 @@ async function registrarUsuario() {
     const largoMinimo = contrasenna.length >= 8;
 
     if (!(tieneMin && tieneMay && tieneNumero && tieneEspecial && largoMinimo)) {
-        alert("La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.");
+        mostrarMensaje(
+            'La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.',
+            'error'
+        );
         return;
     }
 
@@ -42,21 +45,30 @@ async function registrarUsuario() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            // convertimos los datos (javaScript) a JSON para enviarlos al servidor
-            body: JSON.stringify({ nombre, primerApellido, segundoApellido, telefono, correo, contrasenna })
+            body: JSON.stringify({
+                nombre,
+                primerApellido,
+                segundoApellido,
+                telefono,
+                correo,
+                contrasenna
+            })
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-        alert(data.message); 
-        return;
+            mostrarMensaje(data.message || 'No se pudo registrar el usuario', 'error');
+            return;
         }
 
-        alert("Usuario registrado correctamente ✅");
-        location.href = "/html/usuario/inicioSesion.html";
+        mostrarMensaje(data.message || 'Usuario registrado correctamente', 'success');
+
+        setTimeout(() => {
+            location.href = "/html/usuario/inicioSesion.html";
+        }, 1000);
 
     } catch (error) {
-        alert("No se pudo conectar al servidor");
+        mostrarMensaje('No se pudo conectar al servidor', 'error');
     }
 }
