@@ -6,6 +6,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../../css/inicioSesion.css">
+<link rel="stylesheet" href="../../css/mensajes.css">
 </head>
 
 <body>
@@ -26,18 +27,21 @@
 
     <div class="card-login">
 
-        <h2 class="titulo-login mb-4 text-center">Iniciar Sesión</h2>
+    <h2 class="titulo-login mb-4 text-center">Iniciar Sesión</h2>
 
-        <input type="email" 
-               id="correo" 
-               class="form-control input-auto mb-3" 
-               placeholder="Correo Electrónico">
+    <!-- 🔥 AQUÍ -->
+    <div id="contenedor-mensajes"></div>
 
-        <input type="password" 
-               id="contrasenna" 
-               class="form-control input-auto mb-4" 
-               placeholder="Contraseña" 
-               autocomplete="new-password">
+    <input type="email" 
+           id="correo" 
+           class="form-control input-auto mb-3" 
+           placeholder="Correo Electrónico">
+
+    <input type="password" 
+           id="contrasenna" 
+           class="form-control input-auto mb-4" 
+           placeholder="Contraseña"
+           autocomplete="new-password">
 
         <div class="d-grid gap-2">
             <button onclick="iniciarSesion()" 
@@ -55,6 +59,7 @@
 </div>
 
 <script src="../../js/usuario/inicioSesion.js" defer></script>
+<script src="../utilidades/mensajes.js"></script>
 
 </body>
 </html>

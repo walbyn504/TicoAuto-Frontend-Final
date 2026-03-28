@@ -3,15 +3,16 @@ const apiBaseUrl = 'http://localhost:3001';
 async function iniciarSesion() {
     const correo = document.getElementById('correo').value.trim();
     const contrasenna = document.getElementById('contrasenna').value.trim();
+
     if (!correo || !contrasenna) {
-        alert('Complete todos los campos correctamente');
+        mostrarMensaje('Complete todos los campos correctamente', 'error');
         return;
     }
 
     const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!regexCorreo.test(correo)) {
-        alert("El formato del correo no es válido");
+        mostrarMensaje("El formato del correo no es válido", 'error');
         return;
     }
 
@@ -21,9 +22,9 @@ async function iniciarSesion() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            // Enviar solo correo y contraseña para autenticación
-            body: JSON.stringify({ correo: correo, contrasenna: contrasenna })
+            body: JSON.stringify({ correo, contrasenna })
         });
+
         const data = await response.json();
 
         if (response.ok) {
@@ -32,15 +33,17 @@ async function iniciarSesion() {
             sessionStorage.setItem('usuario', data.nombre);
             sessionStorage.setItem('usuarioId', data.usuarioId);
 
-            alert("Inicio de sesión exitoso ✅");
-            location.href = '../../index.html';
+            mostrarMensaje(data.message || "Inicio de sesión exitoso", 'success');
+
+            setTimeout(() => {
+                location.href = '../../index.html';
+            }, 1000);
 
         } else {
-            alert(data.message);
-            return;
+            mostrarMensaje(data.message, 'error');
         }
 
-        } catch (error) {
-            alert("No se pudo conectar al servidor");
-        }
+    } catch (error) {
+        mostrarMensaje("No se pudo conectar al servidor", 'error');
+    }
 }
