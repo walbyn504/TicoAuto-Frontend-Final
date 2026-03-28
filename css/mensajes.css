@@ -1,0 +1,35 @@
+#contenedor-mensajes {
+    margin-bottom: 10px;
+    text-align: center; /* 🔥 centra el mensaje */
+}
+
+.mensaje {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 1000;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+/* Error */
+.mensaje.error {
+    color: #ff2d2d;
+    text-shadow:
+        0 0 2px #000,
+        0 0 4px #000,
+        0 0 6px rgba(0,0,0,0.8);
+}
+
+/* Éxito */
+.mensaje.success {
+    color: #22c55e;
+    text-shadow:
+        0 0 2px #000,
+        0 0 4px #000,
+        0 0 6px rgba(0,0,0,0.8);
+}
+
+/* Iconos opcionales */
+.mensaje.error::before {
+    content: "⚠ ";
+}
