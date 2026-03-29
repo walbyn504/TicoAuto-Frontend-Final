@@ -2,14 +2,13 @@ function verDetalles(id) {
     location.href = `html/vehiculo/verInfoVehiculo.html?id=${id}`;
 }
 
-function copiarEnlace(id) {
+function copiarEnlace(id, boton) {
     try {
         const enlace = `${window.location.origin}/html/vehiculo/verInfoVehiculo.html?id=${id}`;
         navigator.clipboard.writeText(enlace);
-        alert("Enlace copiado al portapapeles ✅");
+        mostrarMensajeEnBoton("Enlace copiado al portapapeles", "success", boton);
     } catch (error) {
-        alert("No se pudo copiar el enlace ❌");
-        console.error(error);
+        mostrarMensajeEnBoton("No se pudo copiar el enlace", "error", boton);
     }
 }
 

@@ -27,7 +27,7 @@ function mostrarVehiculos(vehiculos) {
                         <button class="btn btn-primary btn-sm flex-fill" onclick="verDetalles('${v._id}')">
                             Ver Detalle
                         </button>
-                        <button class="btn btn-secondary btn-sm flex-fill" onclick="copiarEnlace('${v._id}')">
+                        <button class="btn btn-secondary btn-sm flex-fill" onclick="copiarEnlace('${v._id}', this)">
                             Copiar enlace
                         </button>
                         ${usuarioLogueado && !esMiVehiculo ? `

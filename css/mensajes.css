@@ -12,7 +12,7 @@
 }
 
 /* Error */
-.mensaje.error {
+.mensaje-error {
     color: #ff2d2d;
     text-shadow:
         0 0 2px #000,
@@ -21,7 +21,7 @@
 }
 
 /* Éxito */
-.mensaje.success {
+.mensaje-success {
     color: #22c55e;
     text-shadow:
         0 0 2px #000,
@@ -30,6 +30,44 @@
 }
 
 /* Iconos opcionales */
-.mensaje.error::before {
+.mensaje-error::before {
     content: "⚠ ";
+}
+
+.mensaje-boton {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 61%;
+    transform: translateX(-50%);
+    z-index: 20;
+    white-space: nowrap;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    animation: aparecerMensaje 0.2s ease;
+}
+
+.mensaje-boton-error {
+    background-color: #dc3545;
+    color: white;
+}
+
+.mensaje-boton-success {
+    color: rgb(255, 255, 255);
+    text-shadow:
+        0 0 2px #000,
+        0 0 4px #000,
+        0 0 6px rgba(0,0,0,0.8);
+}
+
+@keyframes aparecerMensaje {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
 }
