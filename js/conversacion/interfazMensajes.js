@@ -175,10 +175,6 @@ function mostrarConversacionExistente(conversacion) {
         if (preguntaSinRespuesta) {
             modoEnvio = "respuesta";
             preguntaPendienteId = preguntaSinRespuesta.pregunta._id;
-        } else {
-            // Ya no hay pendiente, pero guardo la última pregunta
-            modoEnvio = "respuesta";
-            preguntaPendienteId = conversacion.mensajes[conversacion.mensajes.length - 1].pregunta._id;
         }
 
     } else {
