@@ -2,13 +2,15 @@ async function enviarPregunta() {
     const textarea = document.getElementById("textoPregunta");
     const texto = textarea.value.trim();
 
+    limpiarMensaje("mensaje-chat");
+
     if (!texto) {
-        alert("Debes escribir una pregunta.");
+        mostrarMensaje("Debes escribir una pregunta.", "error", "mensaje-chat");
         return;
     }
 
     if (!conversacionSeleccionada) {
-        alert("Debes seleccionar una conversación.");
+        mostrarMensaje("Debes seleccionar una conversación.", "error", "mensajechat");
         return;
     }
 
@@ -39,11 +41,13 @@ async function enviarPregunta() {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.mensaje);
+            mostrarMensaje(data.mensaje || "No se pudo enviar la pregunta.", "error", "mensaje-chat");
             return;
         }
 
         textarea.value = "";
+        limpiarMensaje("mensaje-chat");
+
         await cargarConversaciones();
 
         // Después de recargar las conversaciones, selecciona la conversación actualizada
@@ -54,6 +58,6 @@ async function enviarPregunta() {
 
     } catch (error) {
         console.error(error);
-        alert("Error al enviar pregunta.");
+        mostrarMensaje("Error al enviar pregunta.", "error", "mensaje-chat");
     }
 }

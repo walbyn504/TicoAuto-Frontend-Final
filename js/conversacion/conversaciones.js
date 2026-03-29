@@ -1,5 +1,7 @@
 async function cargarConversaciones() {
     try {
+        limpiarMensaje("mensaje-chat");
+
         const [responseMisPreguntas, responsePreguntasDeMisVehiculos] = await Promise.all([
             fetch(`${apiBaseUrl}/api/preguntas/enviadas`, {
                 method: "GET",
@@ -19,31 +21,28 @@ async function cargarConversaciones() {
         const preguntasDeMisVehiculos = await responsePreguntasDeMisVehiculos.json();
 
         if (!responseMisPreguntas.ok) {
-            alert(misPreguntas.mensaje);
+            mostrarMensaje(misPreguntas.mensaje || "No se pudieron cargar tus preguntas", "error", "mensaje-chat");
             return;
         }
 
         if (!responsePreguntasDeMisVehiculos.ok) {
-            alert(preguntasDeMisVehiculos.mensaje);
+            mostrarMensaje(preguntasDeMisVehiculos.mensaje || "No se pudieron cargar las preguntas recibidas", "error", "mensaje-chat");
             return;
         }
 
-        // Une ambas listas de preguntas en un solo arreglo
         const todasLasPreguntas = [
             ...misPreguntas,
             ...preguntasDeMisVehiculos
         ];
 
-         // Reinicia el objeto donde se almacenan las conversaciones agrupadas
         conversacionesAgrupadas = {};
 
-        // Agrupa las preguntas por vehículo para formar conversaciones
         agruparConversacionesPorVehiculo(todasLasPreguntas);
-        await mostrarListaConversaciones(); // Muestra la lista de conversaciones
+        await mostrarListaConversaciones();
 
     } catch (error) {
         console.error(error);
-        alert("Error al cargar conversaciones.");
+        mostrarMensaje("Error al cargar conversaciones.", "error", "mensaje-chat");
     }
 }
 
@@ -104,8 +103,6 @@ async function abrirConversacionInicial(conversaciones) {
     }
 
     if (vehiculoIdUrl) {
-
-        // Buscar si ya existe conversación para ese vehículo
         for (let i = 0; i < conversaciones.length; i++) {
             if (conversaciones[i].vehiculoId === vehiculoIdUrl) {
                 await seleccionarConversacion(conversaciones[i].conversacionId);
@@ -113,7 +110,6 @@ async function abrirConversacionInicial(conversaciones) {
             }
         }
 
-        // Si no existe conversación todavía
         await seleccionarConversacion(vehiculoIdUrl);
         return;
     }
@@ -123,7 +119,12 @@ async function abrirConversacionInicial(conversaciones) {
         return;
     }
 
-    // Si no hay conversaciones
-    document.getElementById("mensajesChat").innerHTML = "";
+    document.getElementById("mensajesChat").innerHTML = `
+        <div class="text-center text-muted mt-5">
+            <h5>No tienes conversaciones todavía</h5>
+            <p>Cuando envíes o recibas mensajes, aparecerán aquí.</p>
+        </div>
+    `;
+
     document.getElementById("textoPregunta").value = "";
 }

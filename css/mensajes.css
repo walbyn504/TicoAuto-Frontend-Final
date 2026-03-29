@@ -1,6 +1,9 @@
-#contenedor-mensajes {
+#contenedor-mensajes,
+#mensaje-chat,
+#mensaje-footer-chat,
+#mensaje-filtros {
     margin-bottom: 10px;
-    text-align: center; /* 🔥 centra el mensaje */
+    text-align: center;
 }
 
 .mensaje {

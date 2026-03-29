@@ -36,7 +36,7 @@ async function obtenerVehiculo(vehiculoId) {
         return vehiculo;
 
     } catch (error) {
-        alert("Error al obtener el vehículo.");
+        mostrarMensaje("Error al obtener el vehículo.", "error", "mensaje-chat");
         return null;
     }
 }
