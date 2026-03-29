@@ -1,7 +1,10 @@
 #contenedor-mensajes,
 #mensaje-chat,
 #mensaje-footer-chat,
-#mensaje-filtros {
+#mensaje-filtros,
+#mensaje-form-vehiculo,
+#mensaje-gestion-vehiculo,
+#mensaje-detalle-vehiculo {
     margin-bottom: 10px;
     text-align: center;
 }

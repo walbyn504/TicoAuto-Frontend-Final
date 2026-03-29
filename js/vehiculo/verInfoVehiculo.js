@@ -4,40 +4,49 @@ const token = sessionStorage.getItem('token');
 // --- Función principal: inicializa la página ---
 async function initVerVehiculo() {
     const id = getVehiculoIdFromUrl();
+
     if (!id) {
-        alert("No se seleccionó ningún vehículo ❌");
-        volver();
+        mostrarMensaje("No se seleccionó ningún vehículo.", "error", "mensaje-detalle-vehiculo");
+        setTimeout(() => {
+            volver();
+        }, 1200);
         return;
     }
+
     await cargarVehiculo(id);
 }
 
 function getVehiculoIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('id'); // devuelve el valor de ?id=
+    return params.get('id');
 }
-
 
 // --- Cargar vehículo ---
 async function cargarVehiculo(id) {
     try {
+        limpiarMensaje("mensaje-detalle-vehiculo");
+
         const response = await fetch(`${apiBaseUrl}/api/vehiculo/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            const data = await response.json();
-            alert(data.message || "No se pudo cargar el vehículo ❌");
-            volver();
+            mostrarMensaje(data.message || "No se pudo cargar el vehículo.", "error", "mensaje-detalle-vehiculo");
+            setTimeout(() => {
+                volver();
+            }, 1200);
             return;
         }
 
-        const vehiculo = await response.json();
-        mostrarVehiculo(vehiculo);
+        mostrarVehiculo(data);
 
     } catch (error) {
-        alert("Error al conectar con el servidor ❌");
-        volver();
+        mostrarMensaje("Error al conectar con el servidor.", "error", "mensaje-detalle-vehiculo");
+        setTimeout(() => {
+            volver();
+        }, 1200);
     }
 }
 
@@ -47,10 +56,8 @@ function mostrarVehiculo(vehiculo) {
     let usuarioInfo = '';
 
     if (vehiculo.usuario) {
-        // Siempre mostramos el nombre
         usuarioInfo += `<p><strong>Nombre:</strong> ${vehiculo.usuario.nombre}</p>`;
 
-        // Si hay más campos, los mostramos
         if (vehiculo.usuario.primerApellido) {
             usuarioInfo += `
                 <p><strong>Primer Apellido:</strong> ${vehiculo.usuario.primerApellido}</p>
@@ -66,9 +73,9 @@ function mostrarVehiculo(vehiculo) {
     contenedor.innerHTML = `
         <div class="detalle-vehiculo">
         
-        <button class="btn-volver" onclick="volver()">
-            →
-        </button>
+            <button class="btn-volver" onclick="volver()">
+                →
+            </button>
 
             <h1 class="detalle-titulo">${vehiculo.marca} ${vehiculo.modelo}</h1>
             <div class="detalle-precio">$${vehiculo.precio}</div>

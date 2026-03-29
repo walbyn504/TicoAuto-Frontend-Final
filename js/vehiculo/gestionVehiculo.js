@@ -4,7 +4,16 @@ window.onload = obtenerVehiculos;
 
 async function obtenerVehiculos() {
     const token = sessionStorage.getItem('token');
-    if (!token) return;
+
+    limpiarMensaje("mensaje-gestion-vehiculo");
+
+    if (!token) {
+        mostrarMensaje("Debe iniciar sesión.", "error", "mensaje-gestion-vehiculo");
+        setTimeout(() => {
+            location.href = "/html/usuario/inicioSesion.html";
+        }, 1000);
+        return;
+    }
 
     try {
         const response = await fetch(`${apiBaseUrl}/api/mis-vehiculos`, {
@@ -13,32 +22,43 @@ async function obtenerVehiculos() {
             }
         });
 
-        let data = [];
-
-        data = await response.json();
+        const data = await response.json();
 
         if (!response.ok) {
             if (response.status === 401) {
-                alert(data.message || "Sesión expirada ❌");
+                mostrarMensaje(data.message || "Sesión expirada.", "error", "mensaje-gestion-vehiculo");
                 sessionStorage.removeItem("token");
-                location.href = "/html/usuario/inicioSesion.html";
+
+                setTimeout(() => {
+                    location.href = "/html/usuario/inicioSesion.html";
+                }, 1200);
                 return;
             }
 
-            alert(data.message || "Error al cargar vehículos ❌");
+            mostrarMensaje(data.message || "Error al cargar vehículos.", "error", "mensaje-gestion-vehiculo");
             return;
         }
 
         mostrarVehiculos(data);
 
     } catch (error) {
-        alert("No se pudo conectar al servidor ❌");
+        mostrarMensaje("No se pudo conectar al servidor.", "error", "mensaje-gestion-vehiculo");
     }
 }
 
 function mostrarVehiculos(vehiculos) {
     const container = document.getElementById("vehiculosContainer");
     container.innerHTML = "";
+
+    if (!vehiculos || vehiculos.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center text-white mt-4">
+                <h4>No tienes vehículos registrados</h4>
+                <p>Puedes crear uno desde el botón “+ Crear Vehículo”.</p>
+            </div>
+        `;
+        return;
+    }
 
     vehiculos.forEach(v => {
         const card = document.createElement("div");
@@ -81,14 +101,18 @@ function mostrarVehiculos(vehiculos) {
 
 function editarVehiculo(id) {
     location.href = `/html/vehiculo/formularioVehiculo.html?id=${id}`;
-    
 }
 
 async function eliminarVehiculo(id) {
     if (!confirmarEliminacion()) return;
-    const token = sessionStorage.getItem('token');
 
-    if (!token) return;
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+        mostrarMensaje("Debe iniciar sesión.", "error", "mensaje-gestion-vehiculo");
+        return;
+    }
+
+    limpiarMensaje("mensaje-gestion-vehiculo");
 
     try {
         const response = await fetch(`${apiBaseUrl}/api/vehiculo/${id}`, {
@@ -101,22 +125,21 @@ async function eliminarVehiculo(id) {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.message || "Error al eliminar el vehículo ❌");
+            mostrarMensaje(data.message || "Error al eliminar el vehículo.", "error", "mensaje-gestion-vehiculo");
             return;
         }
 
-        alert(data.message || "Vehículo eliminado correctamente ✅");
-        obtenerVehiculos();
+        await obtenerVehiculos();
+        mostrarMensaje(data.message || "Vehículo eliminado correctamente.", "success", "mensaje-gestion-vehiculo");
 
     } catch (error) {
-        alert("No se pudo conectar al servidor ❌");
+        mostrarMensaje("No se pudo conectar al servidor.", "error", "mensaje-gestion-vehiculo");
     }
 }
 
 function confirmarEliminacion() {
     return confirm("¿Seguro que desea eliminar este vehículo?");
 }
-
 
 function confirmarVendido() {
     return confirm("¿Seguro que desea marcar como vendido este vehículo?");
@@ -126,7 +149,12 @@ async function marcarVendido(id) {
     if (!confirmarVendido()) return;
 
     const token = sessionStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+        mostrarMensaje("Debe iniciar sesión.", "error", "mensaje-gestion-vehiculo");
+        return;
+    }
+
+    limpiarMensaje("mensaje-gestion-vehiculo");
 
     try {
         const response = await fetch(`${apiBaseUrl}/api/vehiculo/vendido/${id}`, {
@@ -135,28 +163,29 @@ async function marcarVendido(id) {
                 "Authorization": `Bearer ${token}`
             }
         });
-        
-        let data = {};
-        
-        data = await response.json();
+
+        const data = await response.json();
 
         if (!response.ok) {
             if (response.status === 401) {
-                alert(data.message || "Sesión expirada ❌");
+                mostrarMensaje(data.message || "Sesión expirada.", "error", "mensaje-gestion-vehiculo");
                 sessionStorage.removeItem("token");
-                location.href = "/html/usuario/inicioSesion.html";
+
+                setTimeout(() => {
+                    location.href = "/html/usuario/inicioSesion.html";
+                }, 1200);
                 return;
             }
 
-            alert(data.message || "Error al marcar el vehículo como vendido ❌");
+            mostrarMensaje(data.message || "Error al marcar el vehículo como vendido.", "error", "mensaje-gestion-vehiculo");
             return;
         }
 
-        alert(data.message || "Vehículo marcado como vendido ✅");
-        obtenerVehiculos();
+        await obtenerVehiculos();
+        mostrarMensaje(data.message || "Vehículo marcado como vendido.", "success", "mensaje-gestion-vehiculo");
 
     } catch (error) {
-        alert("No se pudo conectar al servidor ❌");
+        mostrarMensaje("No se pudo conectar al servidor.", "error", "mensaje-gestion-vehiculo");
     }
 }
 

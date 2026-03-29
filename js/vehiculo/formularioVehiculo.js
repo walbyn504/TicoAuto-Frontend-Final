@@ -2,10 +2,12 @@ const apiBaseUrl = 'http://localhost:3001';
 const token = sessionStorage.getItem('token');
 
 if (!token) {
-    alert("Debe iniciar sesión");
-    location.href = "/html/usuario/inicioSesion.html";
-}
+    mostrarMensaje("Debe iniciar sesión", "error", "mensaje-form-vehiculo");
 
+    setTimeout(() => {
+        location.href = "/html/usuario/inicioSesion.html";
+    }, 1200);
+}
 
 // --- Función principal: inicializa la página ---
 async function initVehiculo() {
@@ -13,23 +15,28 @@ async function initVehiculo() {
     const id = urlParams.get('id');
 
     if (id) {
-        cargarVehiculo(id);
+        await cargarVehiculo(id);
     }
-
 }
 
 // --- Cargar vehículo para edición ---
 async function cargarVehiculo(id) {
     try {
+        limpiarMensaje("mensaje-form-vehiculo");
+
         const response = await fetch(`${apiBaseUrl}/api/vehiculo/edicion/${id}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error("Error al cargar vehículo");
 
-        const vehiculo = await response.json(); 
+        if (!response.ok) {
+            throw new Error("Error al cargar vehículo");
+        }
+
+        const vehiculo = await response.json();
         llenarFormulario(vehiculo);
+
     } catch (error) {
-        alert("No se pudo cargar el vehículo ❌");
+        mostrarMensaje("No se pudo cargar el vehículo", "error", "mensaje-form-vehiculo");
     }
 }
 
@@ -66,23 +73,25 @@ async function guardarVehiculo() {
     const condicion = form.condicion.value;
     const imagen = document.getElementById("imagen").files[0];
 
+    limpiarMensaje("mensaje-form-vehiculo");
+
     if (!marca || !modelo || !color || isNaN(anno) || isNaN(precio) || !combustible || !transmision || !condicion) {
-        alert("Complete todos los campos correctamente ❌");
+        mostrarMensaje("Complete todos los campos correctamente", "error", "mensaje-form-vehiculo");
         return;
     }
 
     if (anno < 0) {
-        alert("El año no puede ser negativo ❌");
+        mostrarMensaje("El año no puede ser negativo", "error", "mensaje-form-vehiculo");
         return;
     }
 
     if (precio < 0) {
-        alert("El precio no puede ser negativo ❌");
+        mostrarMensaje("El precio no puede ser negativo", "error", "mensaje-form-vehiculo");
         return;
     }
 
     if (!id && !imagen) {
-        alert("Seleccione una imagen para el vehículo ❌");
+        mostrarMensaje("Seleccione una imagen para el vehículo", "error", "mensaje-form-vehiculo");
         return;
     }
 
@@ -113,16 +122,25 @@ async function guardarVehiculo() {
         const data = await response.json();
 
         if (!response.ok) {
-            alert(data.message);
+            mostrarMensaje(data.message || "No se pudo guardar el vehículo", "error", "mensaje-form-vehiculo");
             return;
         }
 
-        alert(id ? "Vehículo actualizado ✅" : "Vehículo creado ✅");
-        location.href = '/html/vehiculo/gestionVehiculo.html';
+        mostrarMensaje(
+            id ? "Vehículo actualizado" : "Vehículo creado",
+            "success",
+            "mensaje-form-vehiculo"
+        );
+
+        setTimeout(() => {
+            location.href = '/html/vehiculo/gestionVehiculo.html';
+        }, 1000);
+
     } catch (error) {
-        alert("No se pudo conectar al servidor ❌");
+        mostrarMensaje("No se pudo conectar al servidor", "error", "mensaje-form-vehiculo");
     }
 }
+
 // --- Regresar al índice ---
 function regresar() {
     location.href = '/html/vehiculo/gestionVehiculo.html';
