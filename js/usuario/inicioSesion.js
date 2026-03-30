@@ -28,10 +28,8 @@ async function iniciarSesion() {
         const data = await response.json();
 
         if (response.ok) {
-
+            // Solo guardar el token
             sessionStorage.setItem('token', data.token);
-            sessionStorage.setItem('usuario', data.nombre);
-            sessionStorage.setItem('usuarioId', data.usuarioId);
 
             mostrarMensaje(data.message || "Inicio de sesión exitoso", 'success', "contenedor-mensajes");
 
@@ -40,7 +38,7 @@ async function iniciarSesion() {
             }, 1000);
 
         } else {
-            mostrarMensaje(data.message, 'error', "contenedor-mensajes");
+            mostrarMensaje(data.message || "No se pudo iniciar sesión", 'error', "contenedor-mensajes");
         }
 
     } catch (error) {

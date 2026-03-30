@@ -1,5 +1,6 @@
 function verificarUsuario() {
-    const usuario = sessionStorage.getItem("usuario");
+    const token = sessionStorage.getItem("token");
+
     const nombreCont = document.getElementById("nombreUsuario");
     const botonesCont = document.getElementById("botonesUsuario");
     const menuCont = document.getElementById("menuOpciones");
@@ -8,7 +9,17 @@ function verificarUsuario() {
 
     const estoyEnDetalle = window.location.pathname.includes("/html/vehiculo/verInfoVehiculo.html");
 
-    if (!usuario) {
+    if (token) {
+        try {
+            usuarioPayload = JSON.parse(atob(token.split('.')[1]));
+        } catch (error) {
+            usuarioPayload = null;
+        }
+    } else {
+        usuarioPayload = null;
+    }
+
+    if (!usuarioPayload) {
         nombreCont.innerHTML = "";
 
         if (estoyEnDetalle) {
@@ -30,7 +41,7 @@ function verificarUsuario() {
             </a>
         `;
     } else {
-        nombreCont.innerHTML = `👤 ${usuario}`;
+        nombreCont.innerHTML = `👤 ${usuarioPayload.nombre}`;
 
         menuCont.innerHTML = `
             <div class="dropdown me-3">
@@ -67,10 +78,4 @@ function verificarUsuario() {
             </button>
         `;
     }
-}
-
-function cerrarSesion() {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("usuario");
-    window.location.href = "/html/usuario/inicioSesion.html";
 }

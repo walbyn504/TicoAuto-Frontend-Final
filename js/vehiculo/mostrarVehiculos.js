@@ -2,8 +2,8 @@ function mostrarVehiculos(vehiculos) {
     const contenedor = document.getElementById('vehiculosContainer');
     contenedor.innerHTML = '';
 
-    const usuarioLogueado = sessionStorage.getItem("usuario");
-    const usuarioLogueadoId = sessionStorage.getItem("usuarioId");
+    const usuarioLogueado = usuarioPayload !== null;
+    const usuarioLogueadoId = usuarioPayload ? usuarioPayload.id : null;
 
     vehiculos.forEach(v => {
         const card = document.createElement("div");
