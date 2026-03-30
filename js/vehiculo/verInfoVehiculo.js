@@ -1,8 +1,9 @@
-const apiBaseUrl = 'http://localhost:3001';
-const token = sessionStorage.getItem('token');
-
 // --- Función principal: inicializa la página ---
 async function initVerVehiculo() {
+    if (typeof verificarUsuario === "function") {
+        verificarUsuario();
+    }
+
     const id = getVehiculoIdFromUrl();
 
     if (!id) {
@@ -21,7 +22,6 @@ function getVehiculoIdFromUrl() {
     return params.get('id');
 }
 
-// --- Cargar vehículo ---
 async function cargarVehiculo(id) {
     try {
         limpiarMensaje("mensaje-detalle-vehiculo");
@@ -72,13 +72,10 @@ function mostrarVehiculo(vehiculo) {
 
     contenedor.innerHTML = `
         <div class="detalle-vehiculo">
-        
-            <button class="btn-volver" onclick="volver()">
-                →
-            </button>
-
-            <h1 class="detalle-titulo">${vehiculo.marca} ${vehiculo.modelo}</h1>
-            <div class="detalle-precio">$${vehiculo.precio}</div>
+            <div class="detalle-header">
+                <h1 class="titulo-card">${vehiculo.marca} ${vehiculo.modelo}</h1>
+                <div class="detalle-precio">Precio: ₡${vehiculo.precio}</div>
+            </div>
 
             <div class="detalle-imagen-contenedor">
                 <img 
@@ -103,15 +100,12 @@ function mostrarVehiculo(vehiculo) {
                     ${usuarioInfo}
                 </div>
             </div>
-
         </div>
     `;
 }
 
-// --- Botón volver ---
 function volver() {
     window.history.back();
 }
 
-// --- Inicializar ---
 initVerVehiculo();

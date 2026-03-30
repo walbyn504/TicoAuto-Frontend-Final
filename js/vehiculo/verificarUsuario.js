@@ -1,13 +1,25 @@
 function verificarUsuario() {
-    
     const usuario = sessionStorage.getItem("usuario");
     const nombreCont = document.getElementById("nombreUsuario");
     const botonesCont = document.getElementById("botonesUsuario");
     const menuCont = document.getElementById("menuOpciones");
 
+    if (!nombreCont || !botonesCont || !menuCont) return;
+
+    const estoyEnDetalle = window.location.pathname.includes("/html/vehiculo/verInfoVehiculo.html");
+
     if (!usuario) {
         nombreCont.innerHTML = "";
-        menuCont.innerHTML = "";
+
+        if (estoyEnDetalle) {
+            menuCont.innerHTML = `
+                <button class="btn btn-outline-light me-3" onclick="volver()">
+                    <i class="bi bi-arrow-left"></i> Regresar
+                </button>
+            `;
+        } else {
+            menuCont.innerHTML = "";
+        }
 
         botonesCont.innerHTML = `
             <a href="/html/usuario/inicioSesion.html" class="btn btn-outline-light me-2">
@@ -34,10 +46,17 @@ function verificarUsuario() {
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="html/conversacion/conversacion.html">
+                        <a class="dropdown-item" href="/html/conversacion/conversacion.html">
                             Chat
                         </a>
                     </li>
+                    ${estoyEnDetalle ? `
+                        <li>
+                            <button class="dropdown-item" onclick="volver()">
+                                Regresar
+                            </button>
+                        </li>
+                    ` : ""}
                 </ul>
             </div>
         `;

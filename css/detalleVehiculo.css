@@ -42,21 +42,6 @@ body {
     transition: 0.2s;
 }
 
-/* TITULO */
-.detalle-titulo {
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: #111827;
-    margin: 0;
-}
-
-/* PRECIO */
-.detalle-precio {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #2563eb;
-    margin-top: -5px;
-}
 
 /* IMAGEN */
 .detalle-imagen-contenedor {
@@ -65,6 +50,7 @@ body {
     border-radius: 18px;
     background: #f8fafc;
     border: 1px solid #e5e7eb;
+    margin-bottom: 28px;
 }
 
 .detalle-imagen {
@@ -75,10 +61,11 @@ body {
 }
 
 /* GRID DE INFO */
-.detalle-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:24px;
+.detalle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 10px;
 }
 
 /* SECCIONES */
@@ -97,9 +84,9 @@ body {
 /* TITULO SECCION */
 .detalle-subtitulo{
     font-size:1.1rem;
-    font-weight:700;
+    font-weight:800;
     margin-bottom:14px;
-    color:#1e40af;
+    color: #111827;
 }
 
 /* TEXTO */
@@ -111,6 +98,29 @@ body {
 
 .detalle-seccion strong {
     color: #111827;
+}
+
+.detalle-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.titulo-card {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+
+}
+
+.detalle-precio {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+    text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 /* RESPONSIVE */
