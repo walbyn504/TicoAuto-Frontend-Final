@@ -27,7 +27,7 @@ function verificarUsuario() {
 
         if (estoyEnDetalle || estoyEnGestion) {
             menuCont.innerHTML = `
-                <button class="btn btn-outline-light me-3" onclick="regresar()">
+                <button class="nav-btn btn-regresar" onclick="regresar()">
                     <i class="bi bi-arrow-left"></i> Regresar
                 </button>
             `;
@@ -36,92 +36,58 @@ function verificarUsuario() {
         }
 
         botonesCont.innerHTML = `
-            <a href="/html/usuario/inicioSesion.html" class="btn btn-outline-light me-2">
+            <a href="/html/usuario/inicioSesion.html" class="nav-btn btn-gestion">
                 Iniciar Sesión
             </a>
-            <a href="/html/usuario/registro.html" class="btn btn-primary">
+            <a href="/html/usuario/registro.html" class="nav-btn btn-gestion">
                 Registrarse
             </a>
         `;
     } else {
         nombreCont.innerHTML = `👤 ${usuarioPayload.nombre}`;
 
+        // 🔥 BOTONES CON ESTILO PERSONALIZADO
         if (estoyEnGestion) {
             menuCont.innerHTML = `
-                <div class="dropdown me-3">
-                    <button class="btn btn-dark" data-bs-toggle="dropdown">
-                        <i class="bi bi-three-dots-vertical"></i>
-                        Menú
-                    </button>
+                <button class="nav-btn btn-regresar" onclick="regresar()">
+                    <i class="bi bi-arrow-left"></i> Regresar
+                </button>
 
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="/html/vehiculo/formularioVehiculo.html">
-                                Crear Vehículo
-                            </a>
-                        </li>
-                        <li>
-                            <button class="dropdown-item" onclick="regresar()">
-                                Regresar
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+                <a href="/html/vehiculo/formularioVehiculo.html" class="nav-btn btn-crear">
+                    <i class="bi bi-plus-circle"></i> Crear Vehiculo
+                </a>
             `;
-        } else if (estoyEnDetalle) {
+        }
+        else if (estoyEnDetalle) {
             menuCont.innerHTML = `
-                <div class="dropdown me-3">
-                    <button class="btn btn-dark" data-bs-toggle="dropdown">
-                        <i class="bi bi-three-dots-vertical"></i>
-                        Menú
-                    </button>
+            
+                <button class="nav-btn btn-regresar" onclick="regresar()">
+                    <i class="bi bi-arrow-left"></i> Regresar
+                </button>
+                <a href="/html/vehiculo/gestionVehiculo.html" class="nav-btn btn-gestion">
+                    <i class="bi bi-gear"></i> Gestión
+                </a>
 
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="/html/vehiculo/gestionVehiculo.html">
-                                Gestionar Vehículos
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/html/conversacion/conversacion.html">
-                                Chat
-                            </a>
-                        </li>
-                        <li>
-                            <button class="dropdown-item" onclick="regresar()">
-                                Regresar
-                            </button>
-                        </li>
-                    </ul>
-                </div>
+                <a href="/html/conversacion/conversacion.html" class="nav-btn btn-chat">
+                    <i class="bi bi-chat-dots"></i> Chat
+                </a>
             `;
-        } else {
+        }
+        else {
             menuCont.innerHTML = `
-                <div class="dropdown me-3">
-                    <button class="btn btn-dark" data-bs-toggle="dropdown">
-                        <i class="bi bi-three-dots-vertical"></i>
-                        Menú
-                    </button>
+                <a href="/html/vehiculo/gestionVehiculo.html" class="nav-btn btn-gestion">
+                    <i class="bi bi-gear"></i> Gestión
+                </a>
 
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="/html/vehiculo/gestionVehiculo.html">
-                                Gestionar Vehículos
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="/html/conversacion/conversacion.html">
-                                Chat
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                <a href="/html/conversacion/conversacion.html" class="nav-btn btn-chat">
+                    <i class="bi bi-chat-dots"></i> Chat
+                </a>
             `;
         }
 
         botonesCont.innerHTML = `
-            <button onclick="cerrarSesion()" class="btn btn-outline-light">
-                Cerrar sesión
+            <button onclick="cerrarSesion()" class="nav-btn btn-regresar">
+             Cerrar sesión
             </button>
         `;
     }
