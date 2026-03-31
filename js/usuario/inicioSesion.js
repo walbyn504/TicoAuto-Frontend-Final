@@ -30,12 +30,7 @@ async function iniciarSesion() {
         if (response.ok) {
             // Solo guardar el token
             sessionStorage.setItem('token', data.token);
-
-            mostrarMensaje(data.message || "Inicio de sesión exitoso", 'success', "contenedor-mensajes");
-
-            setTimeout(() => {
-                location.href = '../../index.html';
-            }, 1000);
+            location.href = '../../index.html';
 
         } else {
             mostrarMensaje(data.message || "No se pudo iniciar sesión", 'error', "contenedor-mensajes");
