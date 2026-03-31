@@ -10,8 +10,20 @@ let conversacionSeleccionada = null;
 let modoEnvio = "pregunta";
 let preguntaPendienteId = null;
 let preguntaSinRespuesta = null;
-const usuarioLogueadoId = sessionStorage.getItem("usuarioId");
-const nombre = sessionStorage.getItem("usuario");
+
+// Obtener datos del usuario desde el token
+let usuarioPayload = null;
+
+if (token) {
+    try {
+        usuarioPayload = JSON.parse(atob(token.split('.')[1]));
+    } catch (error) {
+        usuarioPayload = null;
+    }
+}
+
+const usuarioLogueadoId = usuarioPayload ? usuarioPayload.id : null;
+const nombre = usuarioPayload ? usuarioPayload.nombre : null;
 
 async function enviarMensaje() {
     limpiarMensaje("mensaje-chat");
