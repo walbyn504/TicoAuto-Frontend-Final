@@ -1,3 +1,5 @@
+let usuarioPayload = null;
+
 function verificarUsuario() {
     const token = sessionStorage.getItem("token");
 
@@ -8,6 +10,7 @@ function verificarUsuario() {
     if (!nombreCont || !botonesCont || !menuCont) return;
 
     const estoyEnDetalle = window.location.pathname.includes("/html/vehiculo/verInfoVehiculo.html");
+    const estoyEnGestion = window.location.pathname.includes("/html/vehiculo/gestionVehiculo.html");
 
     if (token) {
         try {
@@ -22,9 +25,9 @@ function verificarUsuario() {
     if (!usuarioPayload) {
         nombreCont.innerHTML = "";
 
-        if (estoyEnDetalle) {
+        if (estoyEnDetalle || estoyEnGestion) {
             menuCont.innerHTML = `
-                <button class="btn btn-outline-light me-3" onclick="volver()">
+                <button class="btn btn-outline-light me-3" onclick="regresar()">
                     <i class="bi bi-arrow-left"></i> Regresar
                 </button>
             `;
@@ -43,39 +46,98 @@ function verificarUsuario() {
     } else {
         nombreCont.innerHTML = `👤 ${usuarioPayload.nombre}`;
 
-        menuCont.innerHTML = `
-            <div class="dropdown me-3">
-                <button class="btn btn-dark" data-bs-toggle="dropdown">
-                    <i class="bi bi-three-dots-vertical"></i>
-                    Menú
-                </button>
+        if (estoyEnGestion) {
+            menuCont.innerHTML = `
+                <div class="dropdown me-3">
+                    <button class="btn btn-dark" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots-vertical"></i>
+                        Menú
+                    </button>
 
-                <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="/html/vehiculo/gestionVehiculo.html">
-                            Gestionar Vehículos
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="/html/conversacion/conversacion.html">
-                            Chat
-                        </a>
-                    </li>
-                    ${estoyEnDetalle ? `
+                    <ul class="dropdown-menu">
                         <li>
-                            <button class="dropdown-item" onclick="volver()">
+                            <a class="dropdown-item" href="/html/vehiculo/formularioVehiculo.html">
+                                Crear Vehículo
+                            </a>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" onclick="regresar()">
                                 Regresar
                             </button>
                         </li>
-                    ` : ""}
-                </ul>
-            </div>
-        `;
+                    </ul>
+                </div>
+            `;
+        } else if (estoyEnDetalle) {
+            menuCont.innerHTML = `
+                <div class="dropdown me-3">
+                    <button class="btn btn-dark" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots-vertical"></i>
+                        Menú
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="/html/vehiculo/gestionVehiculo.html">
+                                Gestionar Vehículos
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/html/conversacion/conversacion.html">
+                                Chat
+                            </a>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" onclick="regresar()">
+                                Regresar
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            `;
+        } else {
+            menuCont.innerHTML = `
+                <div class="dropdown me-3">
+                    <button class="btn btn-dark" data-bs-toggle="dropdown">
+                        <i class="bi bi-three-dots-vertical"></i>
+                        Menú
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="/html/vehiculo/gestionVehiculo.html">
+                                Gestionar Vehículos
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="/html/conversacion/conversacion.html">
+                                Chat
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            `;
+        }
 
         botonesCont.innerHTML = `
             <button onclick="cerrarSesion()" class="btn btn-outline-light">
                 Cerrar sesión
             </button>
         `;
+    }
+}
+
+function cerrarSesion() {
+    sessionStorage.removeItem("token");
+    window.location.href = "/html/usuario/inicioSesion.html";
+}
+
+function regresar() {
+    const rutaActual = window.location.pathname;
+
+    if (rutaActual.includes("/html/vehiculo/formularioVehiculo.html")) {
+        window.location.href = "/html/vehiculo/gestionVehiculo.html";
+    } else {
+        window.location.href = "/index.html";
     }
 }

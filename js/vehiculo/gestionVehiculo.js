@@ -1,9 +1,9 @@
-const apiBaseUrl = 'http://localhost:3001';
-
-window.onload = obtenerVehiculos;
+window.onload = function () {
+    verificarUsuario();
+    obtenerVehiculos();
+};
 
 async function obtenerVehiculos() {
-    const token = sessionStorage.getItem('token');
 
     limpiarMensaje("mensaje-gestion-vehiculo");
 
@@ -54,7 +54,7 @@ function mostrarVehiculos(vehiculos) {
         container.innerHTML = `
             <div class="col-12 text-center text-white mt-4">
                 <h4>No tienes vehículos registrados</h4>
-                <p>Puedes crear uno desde el botón “+ Crear Vehículo”.</p>
+                <p>Puedes crear uno desde el botón “Crear Vehículo”.</p>
             </div>
         `;
         return;
@@ -187,8 +187,4 @@ async function marcarVendido(id) {
     } catch (error) {
         mostrarMensaje("No se pudo conectar al servidor.", "error", "mensaje-gestion-vehiculo");
     }
-}
-
-function cerrar() {
-    location.href = "/index.html";
 }
