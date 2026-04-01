@@ -1,6 +1,44 @@
 const apiBaseUrl = 'http://localhost:3001';
 
+async function consultarCedula() {
+    const cedula = document.getElementById('cedula').value.trim();
+
+    if (!cedula) {
+        mostrarMensaje('La cédula es obligatoria', 'error', "contenedor-mensajes");
+        return;
+    }
+
+    const regexCedula = /^\d{9}$/;
+    if (!regexCedula.test(cedula)) {
+        mostrarMensaje('La cédula debe tener exactamente 9 dígitos', 'error', "contenedor-mensajes");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/padron/${cedula}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            document.getElementById('nombre').value = '';
+            document.getElementById('primerApellido').value = '';
+            document.getElementById('segundoApellido').value = '';
+            mostrarMensaje(data.message || 'La cédula no fue encontrada en el padrón', 'error', "contenedor-mensajes");
+            return;
+        }
+
+        document.getElementById('nombre').value = data.nombre || '';
+        document.getElementById('primerApellido').value = data.apellidoPaterno || '';
+        document.getElementById('segundoApellido').value = data.apellidoMaterno || '';
+
+        mostrarMensaje('Cédula validada correctamente', 'success', "contenedor-mensajes");
+
+    } catch (error) {
+        mostrarMensaje('No se pudo consultar el padrón', 'error', "contenedor-mensajes");
+    }
+}
+
 async function registrarUsuario() {
+    const cedula = document.getElementById('cedula').value.trim();
     const nombre = document.getElementById('nombre').value.trim();
     const primerApellido = document.getElementById('primerApellido').value.trim();
     const segundoApellido = document.getElementById('segundoApellido').value.trim();
@@ -8,8 +46,14 @@ async function registrarUsuario() {
     const correo = document.getElementById('correo').value.trim();
     const contrasenna = document.getElementById('contrasenna').value.trim();
 
-    if (!nombre || !primerApellido || !segundoApellido || !telefono || !correo || !contrasenna) {
+    if (!cedula || !nombre || !primerApellido || !segundoApellido || !telefono || !correo || !contrasenna) {
         mostrarMensaje('Todos los campos son obligatorios', 'error', "contenedor-mensajes");
+        return;
+    }
+
+    const regexCedula = /^\d{9}$/;
+    if (!regexCedula.test(cedula)) {
+        mostrarMensaje('La cédula debe tener exactamente 9 dígitos', 'error', "contenedor-mensajes");
         return;
     }
 
@@ -34,7 +78,8 @@ async function registrarUsuario() {
     if (!(tieneMin && tieneMay && tieneNumero && tieneEspecial && largoMinimo)) {
         mostrarMensaje(
             'La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.',
-            'error', "contenedor-mensajes"
+            'error',
+            "contenedor-mensajes"
         );
         return;
     }
@@ -46,9 +91,7 @@ async function registrarUsuario() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                nombre,
-                primerApellido,
-                segundoApellido,
+                cedula,
                 telefono,
                 correo,
                 contrasenna
