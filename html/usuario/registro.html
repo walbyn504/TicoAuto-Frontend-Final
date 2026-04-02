@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../css/registro.css">
     <link rel="stylesheet" href="../../css/mensajes.css">
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -18,6 +20,8 @@
             <h1 class="titulo-formulario mb-4">Registro de Usuario</h1>
 
             <div id="contenedor-mensajes"></div>
+
+            <input type="hidden" id="modoGoogle" value="false">
 
             <div class="d-flex gap-2 mb-3">
                 <input type="text" id="cedula" class="form-control" placeholder="Cédula (Eje: 201110222)">
@@ -32,13 +36,33 @@
             <input type="text" id="segundoApellido" class="form-control mb-3" placeholder="Segundo apellido" readonly>
 
             <input type="text" id="telefono" class="form-control mb-3" placeholder="Teléfono (Eje: 88889999)">
-            <input type="email" id="correo" class="form-control mb-3" placeholder="Correo">
-            <input type="password" id="contrasenna" class="form-control mb-3" placeholder="Contraseña">
 
-            <div class="d-grid gap-2">
-                <button type="button" onclick="registrarUsuario()" class="btn boton-neon">  
+            <div id="bloqueCredenciales">
+                <input type="email" id="correo" class="form-control mb-3" placeholder="Correo">
+                <input type="password" id="contrasenna" class="form-control mb-3" placeholder="Contraseña">
+            </div>
+
+            <div class="d-grid gap-2 mb-3">
+                <button type="button" onclick="registrarUsuario()" class="btn boton-neon">
                     Registrar
                 </button>
+            </div>
+
+            <div class="text-center mb-2">
+                <small class="text-light">
+                    O bien regístrate con Google
+                </small>
+            </div>
+
+            <div class="text-center mb-3">
+                <div id="g_id_onload"
+                    data-client_id="817077174471-bt5e6bh7eelg0989ksook2k9m1eu9tbp.apps.googleusercontent.com"
+                    data-callback="handleGoogleRegisterResponse" data-auto_prompt="false">
+                </div>
+
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"
+                    data-text="signup_with" data-shape="rectangular" data-logo_alignment="left">
+                </div>
             </div>
 
             <div class="text-center mt-3">

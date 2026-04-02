@@ -28,12 +28,37 @@ async function iniciarSesion() {
         const data = await response.json();
 
         if (response.ok) {
-            // Solo guardar el token
             sessionStorage.setItem('token', data.token);
             location.href = '../../index.html';
-
         } else {
             mostrarMensaje(data.message || "No se pudo iniciar sesión", 'error', "contenedor-mensajes");
+        }
+
+    } catch (error) {
+        mostrarMensaje("No se pudo conectar al servidor", 'error', "contenedor-mensajes");
+    }
+}
+
+async function handleGoogleLoginResponse(response) {
+    console.log("Respuesta de Google:", response);
+    try {
+        const respuesta = await fetch(`${apiBaseUrl}/api/google/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                credential: response.credential
+            })
+        });
+
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            sessionStorage.setItem('token', data.token);
+            location.href = '../../index.html';
+        } else {
+            mostrarMensaje(data.message || 'No se pudo iniciar sesión con Google', 'error', "contenedor-mensajes");
         }
 
     } catch (error) {
