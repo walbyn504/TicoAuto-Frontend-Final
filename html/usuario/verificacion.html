@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verificando...</title>
+</head>
+<body>
+    <h2>Verificando tu cuenta...</h2>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+
+        if (!token) {
+            window.location.href = "/html/usuario/verificacionError.html";
+        }
+
+        fetch(`http://localhost:3001/api/autenticacion/verificacion?token=${token}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    window.location.href = "/html/usuario/verificacionExitosa.html";
+                } else {
+                    window.location.href = "/html/usuario/verificacionError.html";
+                }
+            })
+            .catch(() => {
+                window.location.href = "/html/usuario/verificacionError.html";
+            });
+    </script>
+</body>
+</html>
