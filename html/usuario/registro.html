@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Registro de Usuario</title>
@@ -18,21 +19,24 @@
 
             <div id="contenedor-mensajes"></div>
 
-            <input type="text" id="cedula" class="form-control mb-3" placeholder="Cédula">
-            <button type="button" onclick="consultarCedula()" class="btn boton-neon w-100 mb-3">
-                Consultar cédula
-            </button>
+            <div class="d-flex gap-2 mb-3">
+                <input type="text" id="cedula" class="form-control" placeholder="Cédula (Eje: 201110222)">
+
+                <button type="button" onclick="consultarCedula()" class="btn boton-neon btn-sm px-3">
+                    Consultar
+                </button>
+            </div>
 
             <input type="text" id="nombre" class="form-control mb-3" placeholder="Nombre" readonly>
             <input type="text" id="primerApellido" class="form-control mb-3" placeholder="Primer apellido" readonly>
             <input type="text" id="segundoApellido" class="form-control mb-3" placeholder="Segundo apellido" readonly>
 
-            <input type="text" id="telefono" class="form-control mb-3" placeholder="Teléfono">
+            <input type="text" id="telefono" class="form-control mb-3" placeholder="Teléfono (Eje: 88889999)">
             <input type="email" id="correo" class="form-control mb-3" placeholder="Correo">
             <input type="password" id="contrasenna" class="form-control mb-3" placeholder="Contraseña">
 
             <div class="d-grid gap-2">
-                <button type="button" onclick="registrarUsuario()" class="btn boton-neon">
+                <button type="button" onclick="registrarUsuario()" class="btn boton-neon">  
                     Registrar
                 </button>
             </div>
@@ -50,4 +54,5 @@
     <script src="../../js/usuario/registro.js" defer></script>
 
 </body>
+
 </html>
