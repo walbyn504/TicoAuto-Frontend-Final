@@ -28,6 +28,14 @@ async function iniciarSesion() {
         const data = await response.json();
 
         if (response.ok) {
+            if (data.requiere2FA) {
+                const uid = encodeURIComponent(data.usuarioId);
+                const exp = encodeURIComponent(data.codigo2FAExpira);
+
+                location.href = `verificar2FA.html?uid=${uid}&exp=${exp}`;
+                return;
+            }
+
             sessionStorage.setItem('token', data.token);
             location.href = '../../index.html';
         } else {
@@ -41,6 +49,7 @@ async function iniciarSesion() {
 
 async function handleGoogleLoginResponse(response) {
     console.log("Respuesta de Google:", response);
+
     try {
         const respuesta = await fetch(`${apiBaseUrl}/api/google/login`, {
             method: 'POST',
