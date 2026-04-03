@@ -42,7 +42,7 @@ async function iniciarSesion() {
 async function handleGoogleLoginResponse(response) {
     console.log("Respuesta de Google:", response);
     try {
-        const respuesta = await fetch(`${apiBaseUrl}/api/google/login`, {
+        const respuesta = await fetch(`${apiBaseUrl}/api/autenticacion/google/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

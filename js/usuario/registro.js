@@ -90,7 +90,7 @@ async function registrarUsuario() {
         }
 
         try {
-            const response = await fetch(`${apiBaseUrl}/api/google`, {
+            const response = await fetch(`${apiBaseUrl}/api/autenticacion/google`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
