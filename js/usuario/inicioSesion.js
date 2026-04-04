@@ -1,5 +1,17 @@
 const apiBaseUrl = 'http://localhost:3001';
 
+
+window.onload = () => {
+    const mensaje = sessionStorage.getItem('mensajeRegistroExitoso');
+
+    if (mensaje) {
+        mostrarMensaje(mensaje, 'success', 'contenedor-mensajes');
+
+        // borrar para que no se repita
+        sessionStorage.removeItem('mensajeRegistroExitoso');
+    }
+};
+
 async function iniciarSesion() {
     const correo = document.getElementById('correo').value.trim();
     const contrasenna = document.getElementById('contrasenna').value.trim();

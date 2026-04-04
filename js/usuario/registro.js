@@ -109,8 +109,10 @@ async function registrarUsuario() {
                 return;
             }
 
-            mostrarMensaje(data.message || 'Usuario registrado con Google correctamente', 'success', 'contenedor-mensajes');
-
+            sessionStorage.setItem(
+                'mensajeRegistroExitoso',
+                'Registro exitoso con Google. Revisa tu correo para activar tu cuenta.'
+            );
             setTimeout(() => {
                 location.href = '/html/usuario/inicioSesion.html';
             }, 1000);
@@ -169,7 +171,11 @@ async function registrarUsuario() {
             return;
         }
 
-        mostrarMensaje(data.message || 'Usuario registrado correctamente', 'success', 'contenedor-mensajes');
+       
+        sessionStorage.setItem(
+            'mensajeRegistroExitoso',
+            'Registro exitoso. Revisa tu correo para activar tu cuenta.'
+        );
 
         setTimeout(() => {
             location.href = '/html/usuario/inicioSesion.html';
