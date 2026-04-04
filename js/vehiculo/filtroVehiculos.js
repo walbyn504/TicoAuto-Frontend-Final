@@ -7,7 +7,7 @@ async function initFiltroVehiculos() {
     await ejecutarBusqueda(1);
 }
 
-// Ejecuta la búsqueda de vehículos con filtros y paginación
+// Ejecuta la búsqueda de vehículos con filtros y paginación usando GraphQL
 async function ejecutarBusqueda(page = paginaActual) {
     try {
         paginaActual = page;
@@ -21,6 +21,8 @@ async function ejecutarBusqueda(page = paginaActual) {
         }
 
         const limit = 3;
+
+        // Mantener la URL bonita para paginación/filtros
         const params = new URLSearchParams();
 
         if (filtros.marca) params.append('marca', filtros.marca);
@@ -36,20 +38,65 @@ async function ejecutarBusqueda(page = paginaActual) {
 
         history.replaceState(null, "", "?" + params.toString());
 
-        const response = await fetch(`${apiBaseUrl}/api/vehiculos/filtro?${params.toString()}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        // Construcción dinámica de argumentos GraphQL
+        const argumentos = [];
+
+        if (filtros.marca) argumentos.push(`marca: ${JSON.stringify(filtros.marca)}`);
+        if (filtros.modelo) argumentos.push(`modelo: ${JSON.stringify(filtros.modelo)}`);
+        if (filtros.anno_min) argumentos.push(`anno_min: ${parseInt(filtros.anno_min)}`);
+        if (filtros.anno_max) argumentos.push(`anno_max: ${parseInt(filtros.anno_max)}`);
+        if (filtros.precio_min) argumentos.push(`precio_min: ${parseInt(filtros.precio_min)}`);
+        if (filtros.precio_max) argumentos.push(`precio_max: ${parseInt(filtros.precio_max)}`);
+        if (filtros.estado) argumentos.push(`estado: ${JSON.stringify(filtros.estado)}`);
+
+        argumentos.push(`page: ${paginaActual}`);
+        argumentos.push(`limit: ${limit}`);
+
+        const query = `
+            query {
+                filtroVehiculos(${argumentos.join(", ")}) {
+                    paginaActual
+                    totalPaginas
+                    vehiculos {
+                        _id
+                        marca
+                        modelo
+                        anno
+                        precio
+                        estado
+                        imagen
+                    }
+                }
+            }
+        `;
+
+
+        const response = await fetch(`${apiBaseUrl}/graphql`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query })
         });
 
-        const data = await response.json();
+        const resultado = await response.json();
 
-        if (!response.ok) {
-            mostrarMensaje(data.message || "No se pudo realizar la búsqueda", "error", "mensaje-filtros");
+        if (!response.ok || resultado.errors) {
+            const mensaje =
+                resultado?.errors?.[0]?.message ||
+                resultado?.message ||
+                "No se pudo realizar la búsqueda";
+
+            mostrarMensaje(mensaje, "error", "mensaje-filtros");
             document.getElementById('vehiculosContainer').innerHTML = '';
             return;
         }
 
+        const data = resultado.data.filtroVehiculos;
+
         if (!data.vehiculos || data.vehiculos.length === 0) {
             mostrarMensajeSinResultados();
+            totalPaginas = 1;
             document.getElementById("numeroPagina").textContent = "1";
             return;
         }
