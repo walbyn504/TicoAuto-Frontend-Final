@@ -15,7 +15,7 @@ function mostrarMensaje(texto, tipo = "error", idContenedor = "mensaje-filtros")
         if (contenedor.contains(mensaje)) {
             mensaje.remove();
         }
-    }, 3000);
+    }, 20000);
 }
 
 function limpiarMensaje(idContenedor = "mensaje-filtros") {
@@ -47,5 +47,5 @@ function mostrarMensajeEnBoton(texto, tipo = "success", boton) {
         if (padre.contains(mensaje)) {
             mensaje.remove();
         }
-    }, 2000);
+    }, 4000);
 }
