@@ -36,11 +36,18 @@ async function consultarCedula() {
         const data = await response.json();
 
         if (!response.ok) {
+            // limpiar campos
             document.getElementById('nombre').value = '';
             document.getElementById('primerApellido').value = '';
             document.getElementById('segundoApellido').value = '';
 
-            mostrarMensaje(data.message || 'La cédula no fue encontrada en el padrón', 'error', 'contenedor-mensajes');
+            
+            if (response.status === 404) {
+                mostrarMensaje('La cédula no se encuentra en el padrón', 'error', 'contenedor-mensajes');
+            } else {
+                mostrarMensaje(data.message || 'No se pudo consultar el padrón', 'error', 'contenedor-mensajes');
+            }
+
             return;
         }
 
@@ -48,10 +55,10 @@ async function consultarCedula() {
         document.getElementById('primerApellido').value = data.apellidoPaterno || '';
         document.getElementById('segundoApellido').value = data.apellidoMaterno || '';
 
-        mostrarMensaje('Cédula validada correctamente', 'success', 'contenedor-mensajes');
+        mostrarMensaje('Cédula validada', 'success', 'contenedor-mensajes');
 
     } catch (error) {
-        mostrarMensaje('No se pudo consultar el padrón', 'error', 'contenedor-mensajes');
+        mostrarMensaje('No se pudo conectar con el padrón', 'error', 'contenedor-mensajes');
     }
 }
 
@@ -66,8 +73,8 @@ async function registrarUsuario() {
     const correo = document.getElementById('correo').value.trim();
     const contrasenna = document.getElementById('contrasenna').value.trim();
 
-    if (!cedula || !nombre || !primerApellido || !segundoApellido || !telefono) {
-        mostrarMensaje('Debes consultar la cédula y completar el teléfono', 'error', 'contenedor-mensajes');
+    if (!cedula || !nombre || !primerApellido || !segundoApellido || !telefono || !correo || !contrasenna) {
+        mostrarMensaje('Debes completar todos los campos', 'error', 'contenedor-mensajes');
         return;
     }
 
@@ -121,11 +128,6 @@ async function registrarUsuario() {
             mostrarMensaje('No se pudo conectar al servidor', 'error', 'contenedor-mensajes');
         }
 
-        return;
-    }
-
-    if (!correo || !contrasenna) {
-        mostrarMensaje('Todos los campos son obligatorios', 'error', 'contenedor-mensajes');
         return;
     }
 
