@@ -1,5 +1,6 @@
 async function enviarRespuesta(preguntaId) {
 
+    const chatActual = conversacionSeleccionada;
     const textarea = document.getElementById("textoPregunta");
     const texto = textarea.value.trim();
 
@@ -23,6 +24,10 @@ async function enviarRespuesta(preguntaId) {
         });
 
         const data = await response.json();
+
+        // Si el usuario ya cambió de chat, no mostrar nada aquí
+        if (chatActual !== conversacionSeleccionada) return;
+
 
         if (!response.ok) {
             mostrarMensaje(data.message || "No se pudo enviar la respuesta.", "error", "mensaje-chat");
