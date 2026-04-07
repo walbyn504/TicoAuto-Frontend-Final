@@ -141,7 +141,7 @@ async function eliminarVehiculo(id) {
         }
 
         await obtenerVehiculos();
-        mostrarMensaje(data.message || "Vehículo eliminado correctamente.", "success", "mensaje-gestion-vehiculo");
+        mostrarMensaje(data.message || "Vehículo eliminado", "success", "mensaje-gestion-vehiculo");
 
     } catch (error) {
         mostrarMensaje("No se pudo conectar al servidor.", "error", "mensaje-gestion-vehiculo");
