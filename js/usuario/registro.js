@@ -73,7 +73,7 @@ async function registrarUsuario() {
     const correo = document.getElementById('correo').value.trim();
     const contrasenna = document.getElementById('contrasenna').value.trim();
 
-    if (!cedula || !nombre || !primerApellido || !segundoApellido || !telefono || !correo || !contrasenna) {
+    if (!cedula || !nombre || !primerApellido || !segundoApellido || !telefono) {
         mostrarMensaje('Debes completar todos los campos', 'error', 'contenedor-mensajes');
         return;
     }
@@ -128,6 +128,11 @@ async function registrarUsuario() {
             mostrarMensaje('No se pudo conectar al servidor', 'error', 'contenedor-mensajes');
         }
 
+        return;
+    }
+
+    if (!correo || !contrasenna) {
+        mostrarMensaje('Todos los campos son obligatorios', 'error', 'contenedor-mensajes');
         return;
     }
 
