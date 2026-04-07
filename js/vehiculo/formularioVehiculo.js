@@ -126,11 +126,13 @@ async function guardarVehiculo() {
             return;
         }
 
-        mostrarMensaje(
-            id ? "Vehículo actualizado" : "Vehículo creado",
-            "success",
-            "mensaje-form-vehiculo"
+        // guardar mensaje y redirigir
+        sessionStorage.setItem(
+            'mensajeGlobal',
+            id ? "Vehículo actualizado" : "Vehículo creado"
         );
+
+        sessionStorage.setItem('tipoMensaje', 'success');
 
         setTimeout(() => {
             location.href = '/html/vehiculo/gestionVehiculo.html';
