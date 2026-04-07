@@ -154,31 +154,50 @@ async function seleccionarConversacion(conversacionId) {
 }
 
 function mostrarConversacionExistente(conversacion) {
-    document.getElementById("encabezadoChat").textContent =
-    `Propietario: ${conversacion.propietario} | Datos vehículo: ${conversacion.marca} ${conversacion.modelo}`;
 
+    // Encabezado del chat
+    document.getElementById("encabezadoChat").textContent =
+        `Propietario: ${conversacion.propietario} | Datos vehículo: ${conversacion.marca} ${conversacion.modelo}`;
+
+    // Mostrar mensajes
     mostrarMensajes(conversacion.mensajes);
 
-    const esPropietario = usuarioLogueadoId === conversacion.propietarioId;
+    // ¿Es el dueño?
+    const esPropietario = String(usuarioLogueadoId) === String(conversacion.propietarioId);
+
+    // Reset estado
+    modoEnvio = null;
+    preguntaPendienteId = null;
 
     if (esPropietario) {
-        let preguntaSinRespuesta = null;
 
-        // Busca si existe alguna pregunta sin responder
+        // Dueño siempre responde
+        modoEnvio = "respuesta";
+
+        let preguntaObjetivo = null;
+
+        // Buscar pendiente
         for (let i = 0; i < conversacion.mensajes.length; i++) {
             if (!conversacion.mensajes[i].respuesta) {
-                preguntaSinRespuesta = conversacion.mensajes[i];
+                preguntaObjetivo = conversacion.mensajes[i];
                 break;
             }
         }
 
-        if (preguntaSinRespuesta) {
-            modoEnvio = "respuesta";
-            preguntaPendienteId = preguntaSinRespuesta.pregunta._id;
+        // Si no hay pendiente → usar última
+        // (para que backend diga "ya fue respondida")
+        if (!preguntaObjetivo && conversacion.mensajes.length > 0) {
+            preguntaObjetivo = conversacion.mensajes[conversacion.mensajes.length - 1];
+        }
+
+        // ID que se enviará al backend
+        if (preguntaObjetivo) {
+            preguntaPendienteId = preguntaObjetivo.pregunta._id;
         }
 
     } else {
-         // Si no es propietario, entonces puede hacer una nueva pregunta
+
+        // Usuario hace preguntas
         modoEnvio = "pregunta";
         preguntaPendienteId = null;
     }
