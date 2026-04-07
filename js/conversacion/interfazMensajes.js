@@ -124,24 +124,22 @@ function crearItemConversacion(c, esPropietario, pendiente) {
     return item;
 }
 
-
-
 async function seleccionarConversacion(conversacionId) {
     conversacionSeleccionada = conversacionId;
     document.getElementById("textoPregunta").value = "";
 
+    // Borra mensaje del chat anterior
+    limpiarMensaje("mensaje-chat");
+
     const items = document.querySelectorAll(".chat-item");
     items.forEach(item => item.classList.remove("activo"));
 
-    // Busca la conversación dentro del objeto agrupado
     const conversacion = conversacionesAgrupadas[conversacionId];
 
     if (conversacion) {
-         // Convierte el objeto a arreglo para encontrar su posición
         const conversaciones = Object.values(conversacionesAgrupadas);
         const index = conversaciones.findIndex(c => c.conversacionId === conversacionId);
 
-        // Marca el elemento visual correspondiente como activo
         if (index !== -1 && items[index]) {
             items[index].classList.add("activo");
         }
