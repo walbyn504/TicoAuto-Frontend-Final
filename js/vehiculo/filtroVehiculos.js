@@ -65,6 +65,7 @@ async function ejecutarBusqueda(page = paginaActual) {
                         precio
                         estado
                         imagen
+                        usuario
                     }
                 }
             }
