@@ -1,7 +1,18 @@
 window.onload = function () {
     verificarUsuario();
     obtenerVehiculos();
+
+    const mensaje = sessionStorage.getItem('mensajeGlobal');
+    const tipo = sessionStorage.getItem('tipoMensaje');
+
+    if (mensaje) {
+        mostrarMensaje(mensaje, tipo, 'mensaje-gestion-vehiculo');
+
+        sessionStorage.removeItem('mensajeGlobal');
+        sessionStorage.removeItem('tipoMensaje');
+    }
 };
+
 
 async function obtenerVehiculos() {
 
