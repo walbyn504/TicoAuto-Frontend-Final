@@ -110,7 +110,7 @@ function mostrarVehiculo(vehiculo) {
         <div class="detalle-vehiculo">
             <div class="detalle-header">
                 <h1 class="titulo-card">${vehiculo.marca} ${vehiculo.modelo}</h1>
-                <div class="detalle-precio">Precio: ₡${vehiculo.precio}</div>
+                <div class="detalle-precio">Precio: $${vehiculo.precio}</div>
             </div>
 
             <div class="detalle-imagen-contenedor">
