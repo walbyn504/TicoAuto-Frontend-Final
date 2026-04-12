@@ -6,7 +6,7 @@ if (!token) {
 
     setTimeout(() => {
         location.href = "/html/usuario/inicioSesion.html";
-    }, 1200);
+    }, 2500);
 }
 
 // --- Función principal: inicializa la página ---
