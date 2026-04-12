@@ -22,7 +22,7 @@ async function obtenerVehiculos() {
         mostrarMensaje("Debe iniciar sesión.", "error", "mensaje-gestion-vehiculo");
         setTimeout(() => {
             location.href = "/html/usuario/inicioSesion.html";
-        }, 1000);
+        }, 2000);
         return;
     }
 
@@ -73,7 +73,7 @@ async function obtenerVehiculos() {
 
                 setTimeout(() => {
                     location.href = "/html/usuario/inicioSesion.html";
-                }, 1200);
+                }, 2500);
                 return;
             }
 
