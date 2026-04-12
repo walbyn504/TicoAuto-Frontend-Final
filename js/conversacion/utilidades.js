@@ -7,9 +7,22 @@ function mostrarUsuarioConectado() {
 }
 
 function formatearFecha(fecha) {
-    const f = new Date(fecha);
+    if (!fecha) return "Fecha no disponible";
+
+    let f;
+
+    // 🔥 Si es número o string numérico (timestamp)
+    if (!isNaN(fecha)) {
+        f = new Date(Number(fecha));
+    } else {
+        // 🔥 Si es ISO string u otro formato
+        f = new Date(fecha);
+    }
+
+    if (isNaN(f.getTime())) return "Fecha inválida";
 
     return f.toLocaleString("es-CR", {
+        timeZone: "America/Costa_Rica",
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
