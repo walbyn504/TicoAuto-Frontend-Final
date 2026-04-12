@@ -26,21 +26,58 @@ async function cargarVehiculo(id) {
     try {
         limpiarMensaje("mensaje-detalle-vehiculo");
 
-        const response = await fetch(`${apiBaseUrl}/api/vehiculo/${id}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        const query = `
+            query {
+                obtenerVehiculoPorId(id: "${id}") {
+                    _id
+                    marca
+                    modelo
+                    anno
+                    precio
+                    estado
+                    imagen
+                    combustible
+                    color
+                    transmision
+                    condicion
+                    usuario {
+                        _id
+                        nombre
+                        primerApellido
+                        segundoApellido
+                        correo
+                        telefono
+                    }
+                }
+            }
+        `;
+
+        const response = await fetch(`${apiBaseUrl}/graphql`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ query })
         });
 
         const data = await response.json();
 
-        if (!response.ok) {
-            mostrarMensaje(data.message || "No se pudo cargar el vehículo.", "error", "mensaje-detalle-vehiculo");
+        if (!response.ok || data.errors) {
+            mostrarMensaje(
+                data?.errors?.[0]?.message || "No se pudo cargar el vehículo.",
+                "error",
+                "mensaje-detalle-vehiculo"
+            );
             setTimeout(() => {
                 volver();
             }, 1200);
             return;
         }
 
-        mostrarVehiculo(data);
+        const vehiculo = data.data.obtenerVehiculoPorId;
+
+        mostrarVehiculo(vehiculo);
 
     } catch (error) {
         mostrarMensaje("Error al conectar con el servidor.", "error", "mensaje-detalle-vehiculo");
@@ -56,12 +93,11 @@ function mostrarVehiculo(vehiculo) {
     let usuarioInfo = '';
 
     if (vehiculo.usuario) {
-        usuarioInfo += `<p><strong>Nombre:</strong> ${vehiculo.usuario.nombre}</p>`;
+        usuarioInfo += `<p><strong>Nombre:</strong> ${vehiculo.usuario.nombre || ''}</p>`;
 
         if (vehiculo.usuario.primerApellido) {
             usuarioInfo += `
-                <p><strong>Primer Apellido:</strong> ${vehiculo.usuario.primerApellido}</p>
-                <p><strong>Segundo Apellido:</strong> ${vehiculo.usuario.segundoApellido}</p>
+                <p><strong>Apellidos:</strong> ${vehiculo.usuario.primerApellido || ''} ${vehiculo.usuario.segundoApellido || ''}</p>
                 <p><strong>Teléfono:</strong> ${vehiculo.usuario.telefono}</p>
                 <p><strong>Correo:</strong> ${vehiculo.usuario.correo}</p>
             `;
@@ -74,7 +110,7 @@ function mostrarVehiculo(vehiculo) {
         <div class="detalle-vehiculo">
             <div class="detalle-header">
                 <h1 class="titulo-card">${vehiculo.marca} ${vehiculo.modelo}</h1>
-                <div class="detalle-precio">Precio: ₡${vehiculo.precio}</div>
+                <div class="detalle-precio">Precio: $${vehiculo.precio}</div>
             </div>
 
             <div class="detalle-imagen-contenedor">
@@ -89,10 +125,10 @@ function mostrarVehiculo(vehiculo) {
                     <h4 class="detalle-subtitulo">Información del vehículo</h4>
                     <p><strong>Año:</strong> ${vehiculo.anno}</p>
                     <p><strong>Estado:</strong> ${vehiculo.estado || "Disponible"}</p>
-                    <p><strong>Combustible:</strong> ${vehiculo.combustible}</p>
-                    <p><strong>Color:</strong> ${vehiculo.color}</p>
-                    <p><strong>Transmisión:</strong> ${vehiculo.transmision}</p>
-                    <p><strong>Condición:</strong> ${vehiculo.condicion}</p>
+                    <p><strong>Combustible:</strong> ${vehiculo.combustible || "No especificado"}</p>
+                    <p><strong>Color:</strong> ${vehiculo.color || "No especificado"}</p>
+                    <p><strong>Transmisión:</strong> ${vehiculo.transmision || "No especificada"}</p>
+                    <p><strong>Condición:</strong> ${vehiculo.condicion || "No especificada"}</p>
                 </div>
 
                 <div class="detalle-seccion">

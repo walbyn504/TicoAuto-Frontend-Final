@@ -22,35 +22,66 @@ async function obtenerVehiculos() {
         mostrarMensaje("Debe iniciar sesión.", "error", "mensaje-gestion-vehiculo");
         setTimeout(() => {
             location.href = "/html/usuario/inicioSesion.html";
-        }, 1000);
+        }, 2000);
         return;
     }
 
     try {
-        const response = await fetch(`${apiBaseUrl}/api/mis-vehiculos`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
+        const query = `
+            query {
+                obtenerMisVehiculos {
+                    _id
+                    marca
+                    modelo
+                    anno
+                    precio
+                    imagen
+                    estado
+                    combustible
+                    color
+                    transmision
+                    condicion
+                    usuario {
+                        _id
+                        nombre
+                        primerApellido
+                        segundoApellido
+                        correo
+                        telefono
+                    }
+                }
             }
+        `;
+
+        const response = await fetch(`${apiBaseUrl}/graphql`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ query })
         });
 
         const data = await response.json();
 
-        if (!response.ok) {
-            if (response.status === 401) {
-                mostrarMensaje(data.message || "Sesión expirada.", "error", "mensaje-gestion-vehiculo");
+        if (!response.ok || data.errors) {
+            const mensaje = data?.errors?.[0]?.message || "Error al cargar vehículos.";
+
+            if (mensaje === "Usuario no autenticado") {
+                mostrarMensaje("Sesión expirada.", "error", "mensaje-gestion-vehiculo");
                 sessionStorage.removeItem("token");
 
                 setTimeout(() => {
                     location.href = "/html/usuario/inicioSesion.html";
-                }, 1200);
+                }, 2500);
                 return;
             }
 
-            mostrarMensaje(data.message || "Error al cargar vehículos.", "error", "mensaje-gestion-vehiculo");
+            mostrarMensaje(mensaje, "error", "mensaje-gestion-vehiculo");
             return;
         }
 
-        mostrarVehiculos(data);
+        mostrarVehiculos(data.data.obtenerMisVehiculos);
 
     } catch (error) {
         mostrarMensaje("No se pudo conectar al servidor.", "error", "mensaje-gestion-vehiculo");
