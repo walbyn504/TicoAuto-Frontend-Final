@@ -190,7 +190,7 @@ function mostrarConversacionExistente(conversacion) {
 
         // ID que se enviará al backend
         if (preguntaObjetivo) {
-            preguntaPendienteId = preguntaObjetivo.pregunta._id;
+            preguntaPendienteId = preguntaObjetivo.pregunta.id;
         }
 
     } else {
@@ -225,7 +225,7 @@ async function mostrarVehiculoSinConversacion(vehiculoId) {
     `;
 
     // Si el usuario logueado no es el propietario del vehículo, entonces puede hacer una pregunta
-    if (usuarioLogueadoId !== vehiculo.usuario._id) {
+    if (usuarioLogueadoId !== vehiculo.usuario.id) {
         modoEnvio = "pregunta";
     }
 
