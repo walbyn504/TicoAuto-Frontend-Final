@@ -20,20 +20,44 @@ function formatearFecha(fecha) {
 
 async function obtenerVehiculo(vehiculoId) {
     try {
-        const response = await fetch(`${apiBaseUrl}/api/vehiculo/${vehiculoId}`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
+        const query = `
+            query {
+                obtenerVehiculoPorId(id: "${vehiculoId}") {
+                    _id
+                    marca
+                    modelo
+                    anno
+                    precio
+                    estado
+                    imagen
+                    combustible
+                    color
+                    transmision
+                    condicion
+                    usuario {
+                        _id
+                        nombre
+                    }
+                }
             }
+        `;
+
+        const response = await fetch(`${apiBaseUrl}/graphql`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ query })
         });
 
-        const vehiculo = await response.json();
+        const data = await response.json();
 
-        if (!response.ok) {
+        if (!response.ok || data.errors) {
             return null;
         }
 
-        return vehiculo;
+        return data.data.obtenerVehiculoPorId;
 
     } catch (error) {
         mostrarMensaje("Error al obtener el vehículo.", "error", "mensaje-chat");
