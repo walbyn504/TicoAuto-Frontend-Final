@@ -2,33 +2,49 @@ async function cargarConversaciones() {
     try {
         limpiarMensaje("mensaje-chat");
 
-        const [responseMisPreguntas, responsePreguntasDeMisVehiculos] = await Promise.all([
-            fetch(`${apiBaseUrl}/api/preguntas/enviadas`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
+        const query = `
+            query {
+                obtenerMisConversaciones {
+                    pregunta {
+                        id
+                        pregunta
+                        fechaPregunta
+                        usuario { id nombre }
+                        vehiculo { id marca modelo usuario { id nombre } }
+                    }
+                    respuesta { id respuesta fechaRespuesta usuarioRespuesta pregunta }
                 }
-            }),
-            fetch(`${apiBaseUrl}/api/preguntas/recibidas`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
+                obtenerConversacionesDeMisVehiculos {
+                    pregunta {
+                        id
+                        pregunta
+                        fechaPregunta
+                        usuario { id nombre }
+                        vehiculo { id marca modelo usuario { id nombre } }
+                    }
+                    respuesta { id respuesta fechaRespuesta usuarioRespuesta pregunta }
                 }
-            })
-        ]);
+            }
+        `;
 
-        const misPreguntas = await responseMisPreguntas.json();
-        const preguntasDeMisVehiculos = await responsePreguntasDeMisVehiculos.json();
+        const response = await fetch(`${apiBaseUrl}/graphql`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ query })
+        });
 
-        if (!responseMisPreguntas.ok) {
-            mostrarMensaje(misPreguntas.mensaje || "No se pudieron cargar tus preguntas", "error", "mensaje-chat");
+        const resultado = await response.json();
+
+        if (resultado.errors) {
+            mostrarMensaje(resultado.errors[0].message || "Error al cargar conversaciones", "error", "mensaje-chat");
             return;
         }
 
-        if (!responsePreguntasDeMisVehiculos.ok) {
-            mostrarMensaje(preguntasDeMisVehiculos.mensaje || "No se pudieron cargar las preguntas recibidas", "error", "mensaje-chat");
-            return;
-        }
+        const misPreguntas = resultado.data.obtenerMisConversaciones;
+        const preguntasDeMisVehiculos = resultado.data.obtenerConversacionesDeMisVehiculos;
 
         const todasLasPreguntas = [
             ...misPreguntas,
@@ -60,8 +76,8 @@ function agruparConversacionesPorVehiculo(preguntasRecibidas) {
 
         // Obtiene el vehículo asociado a la pregunta
         const vehiculo = item.pregunta.vehiculo;
-        const vehiculoId = vehiculo._id;
-        const interesadoId = item.pregunta.usuario._id;
+        const vehiculoId = vehiculo.id; 
+        const interesadoId = item.pregunta.usuario.id;
 
         const conversacionId = `${vehiculoId} - ${interesadoId}`;
 
@@ -69,8 +85,8 @@ function agruparConversacionesPorVehiculo(preguntasRecibidas) {
         if (!conversacionesAgrupadas[conversacionId]) {
             conversacionesAgrupadas[conversacionId] = {
                 conversacionId: conversacionId,
-                vehiculoId: vehiculo._id,
-                propietarioId: vehiculo.usuario._id,
+                vehiculoId: vehiculo.id,
+                propietarioId: vehiculo.usuario.id,
                 propietario: vehiculo.usuario.nombre,
                 interesadoId: interesadoId,
                 marca: vehiculo.marca,
@@ -81,7 +97,7 @@ function agruparConversacionesPorVehiculo(preguntasRecibidas) {
 
         // Verifica si esa pregunta ya existe dentro de la conversación
         const yaExiste = conversacionesAgrupadas[conversacionId].mensajes.find(
-            mensaje => mensaje.pregunta._id === item.pregunta._id
+            mensaje => mensaje.pregunta.id === item.pregunta.id
         );
 
         // Agrega la pregunta y respuesta solo si no existe
