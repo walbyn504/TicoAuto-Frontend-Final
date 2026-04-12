@@ -65,12 +65,13 @@ async function ejecutarBusqueda(page = paginaActual) {
                         precio
                         estado
                         imagen
-                        usuario
+                        usuario {
+                            _id
+                        }
                     }
                 }
             }
         `;
-
 
         const response = await fetch(`${apiBaseUrl}/graphql`, {
             method: 'POST',

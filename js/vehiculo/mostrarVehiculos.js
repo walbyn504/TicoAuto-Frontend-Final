@@ -9,7 +9,7 @@ function mostrarVehiculos(vehiculos) {
         const card = document.createElement("div");
         card.className = "col-md-4 mb-4";
 
-        const esMiVehiculo = usuarioLogueadoId === v.usuario;
+        const esMiVehiculo = usuarioLogueadoId === v.usuario?._id;
 
         card.innerHTML = `
             <div class="card h-100">
