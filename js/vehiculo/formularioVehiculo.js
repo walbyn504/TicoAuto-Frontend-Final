@@ -24,19 +24,44 @@ async function cargarVehiculo(id) {
     try {
         limpiarMensaje("mensaje-form-vehiculo");
 
-        const response = await fetch(`${apiBaseUrl}/api/vehiculo/edicion/${id}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
+        const query = `
+            query {
+                obtenerVehiculoEdicion(id: "${id}") {
+                    _id
+                    marca
+                    modelo
+                    anno
+                    precio
+                    imagen
+                    combustible
+                    color
+                    transmision
+                    condicion
+                }
+            }
+        `;
+
+        const response = await fetch(`${apiBaseUrl}/graphql`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ query })
         });
 
-        if (!response.ok) {
-            throw new Error("Error al cargar vehículo");
+        const data = await response.json();
+
+        if (!response.ok || data.errors) {
+            const mensaje = data?.errors?.[0]?.message || "No se pudo cargar el vehículo";
+            throw new Error(mensaje);
         }
 
-        const vehiculo = await response.json();
+        const vehiculo = data.data.obtenerVehiculoEdicion;
         llenarFormulario(vehiculo);
 
     } catch (error) {
-        mostrarMensaje("No se pudo cargar el vehículo", "error", "mensaje-form-vehiculo");
+        mostrarMensaje(error.message || "No se pudo cargar el vehículo", "error", "mensaje-form-vehiculo");
     }
 }
 
