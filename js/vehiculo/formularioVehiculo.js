@@ -1,16 +1,21 @@
 const apiBaseUrl = 'http://localhost:3001';
 const token = sessionStorage.getItem('token');
 
-if (!token) {
-    mostrarMensaje("Debe iniciar sesión", "error", "mensaje-form-vehiculo");
-
-    setTimeout(() => {
-        location.href = "/html/usuario/inicioSesion.html";
-    }, 2500);
-}
 
 // --- Función principal: inicializa la página ---
 async function initVehiculo() {
+
+    limpiarMensaje("mensaje-form-vehiculo");
+
+    if (!token) {
+        mostrarMensaje("Debe iniciar sesión", "error", "mensaje-form-vehiculo");
+
+        setTimeout(() => {
+            location.href = "/html/usuario/inicioSesion.html";
+        }, 2500);
+        return;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
 
@@ -21,6 +26,7 @@ async function initVehiculo() {
 
 // --- Cargar vehículo para edición ---
 async function cargarVehiculo(id) {
+
     try {
         limpiarMensaje("mensaje-form-vehiculo");
 
