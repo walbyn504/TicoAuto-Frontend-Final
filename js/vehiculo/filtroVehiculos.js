@@ -58,7 +58,7 @@ async function ejecutarBusqueda(page = paginaActual) {
                     paginaActual
                     totalPaginas
                     vehiculos {
-                        _id
+                        id
                         marca
                         modelo
                         anno
@@ -66,7 +66,7 @@ async function ejecutarBusqueda(page = paginaActual) {
                         estado
                         imagen
                         usuario {
-                            _id
+                            id
                         }
                     }
                 }

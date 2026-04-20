@@ -30,7 +30,7 @@ async function obtenerVehiculos() {
         const query = `
             query {
                 obtenerMisVehiculos {
-                    _id
+                    id
                     marca
                     modelo
                     anno
@@ -42,7 +42,7 @@ async function obtenerVehiculos() {
                     transmision
                     condicion
                     usuario {
-                        _id
+                        id
                         nombre
                         primerApellido
                         segundoApellido
@@ -122,15 +122,15 @@ function mostrarVehiculos(vehiculos) {
                         <strong>Transmisión:</strong> ${v.transmision} <br> 
                     </p>
                     <div class="d-flex gap-2 mt-2">
-                        <button class="btn btn-primary btn-sm flex-fill" onclick="editarVehiculo('${v._id}')">
+                        <button class="btn btn-primary btn-sm flex-fill" onclick="editarVehiculo('${v.id}')">
                             Editar
                         </button>
 
-                        <button class="btn btn-danger btn-sm flex-fill" onclick="eliminarVehiculo('${v._id}')">
+                        <button class="btn btn-danger btn-sm flex-fill" onclick="eliminarVehiculo('${v.id}')">
                             Eliminar
                         </button>
 
-                        <button class="btn btn-success btn-sm flex-fill" onclick="marcarVendido('${v._id}')">
+                        <button class="btn btn-success btn-sm flex-fill" onclick="marcarVendido('${v.id}')">
                             Vendido
                         </button>
                     </div>

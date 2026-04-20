@@ -9,7 +9,7 @@ function mostrarVehiculos(vehiculos) {
         const card = document.createElement("div");
         card.className = "col-md-4 mb-4";
 
-        const esMiVehiculo = usuarioLogueadoId === v.usuario?._id;
+        const esMiVehiculo = usuarioLogueadoId === v.usuario?.id;
 
         card.innerHTML = `
             <div class="card h-100">
@@ -24,14 +24,14 @@ function mostrarVehiculos(vehiculos) {
                         <strong>Estado:</strong> ${v.estado || "Disponible"}
                     </p>
                     <div class="d-flex gap-2 mt-2">
-                        <button class="btn btn-primary btn-sm flex-fill" onclick="verDetalles('${v._id}')">
+                        <button class="btn btn-primary btn-sm flex-fill" onclick="verDetalles('${v.id}')">
                             Ver Detalle
                         </button>
-                        <button class="btn btn-secondary btn-sm flex-fill" onclick="copiarEnlace('${v._id}', this)">
+                        <button class="btn btn-secondary btn-sm flex-fill" onclick="copiarEnlace('${v.id}', this)">
                             Copiar enlace
                         </button>
                         ${usuarioLogueado && !esMiVehiculo ? `
-                            <button class="btn btn-secondary btn-sm flex-fill" onclick="abrirPaginaPregunta('${v._id}')">
+                            <button class="btn btn-secondary btn-sm flex-fill" onclick="abrirPaginaPregunta('${v.id}')">
                                 Enviar Mensaje
                             </button>
                         ` : ""}

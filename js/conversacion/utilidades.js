@@ -36,7 +36,7 @@ async function obtenerVehiculo(vehiculoId) {
         const query = `
             query {
                 obtenerVehiculoPorId(id: "${vehiculoId}") {
-                    _id
+                    id
                     marca
                     modelo
                     anno
@@ -48,7 +48,7 @@ async function obtenerVehiculo(vehiculoId) {
                     transmision
                     condicion
                     usuario {
-                        _id
+                        id
                         nombre
                     }
                 }

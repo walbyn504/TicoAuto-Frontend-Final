@@ -29,7 +29,7 @@ async function cargarVehiculo(id) {
         const query = `
             query {
                 obtenerVehiculoPorId(id: "${id}") {
-                    _id
+                    id
                     marca
                     modelo
                     anno
@@ -41,7 +41,7 @@ async function cargarVehiculo(id) {
                     transmision
                     condicion
                     usuario {
-                        _id
+                        id
                         nombre
                         primerApellido
                         segundoApellido

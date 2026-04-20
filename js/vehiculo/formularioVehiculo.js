@@ -33,7 +33,7 @@ async function cargarVehiculo(id) {
         const query = `
             query {
                 obtenerVehiculoEdicion(id: "${id}") {
-                    _id
+                    id
                     marca
                     modelo
                     anno
@@ -74,7 +74,7 @@ async function cargarVehiculo(id) {
 // --- Llenar formulario con los datos del vehículo ---
 function llenarFormulario(vehiculo) {
     const form = document.getElementById('formVehiculo');
-    form.vehiculoId.value = vehiculo._id;
+    form.vehiculoId.value = vehiculo.id;
     form.marca.value = vehiculo.marca;
     form.modelo.value = vehiculo.modelo;
     form.anno.value = vehiculo.anno;
