@@ -12,7 +12,7 @@ body {
 #vehiculoDetalles {
     border-radius: 20px;
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
-    background: #ffffff;
+    background: #1f1f1f;
     padding: 30px;
 }
 
@@ -70,7 +70,7 @@ body {
 
 /* SECCIONES */
 .detalle-seccion{
-    background:#f8fafc;
+    background:#1f1f1f;
     border:1px solid #e5e7eb;
     border-radius:16px;
     padding:22px;
@@ -78,7 +78,8 @@ body {
 }
 
 .detalle-seccion:hover{
-    background:#f1f5f9;
+    
+    background: #1f1f1f;
 }
 
 /* TITULO SECCION */
@@ -86,18 +87,18 @@ body {
     font-size:1.1rem;
     font-weight:800;
     margin-bottom:14px;
-    color: #111827;
+    color: #c0c3ca;
 }
 
 /* TEXTO */
 .detalle-seccion p {
     margin-bottom: 10px;
     font-size: 1rem;
-    color: #374151;
+    color: #c0c3ca;
 }
 
 .detalle-seccion strong {
-    color: #111827;
+    color: #c0c3ca;
 }
 
 .detalle-header {
@@ -110,7 +111,7 @@ body {
 .titulo-card {
     font-size: 2rem;
     font-weight: 700;
-    color: #111827;
+    color: #c0c3ca;
     margin: 0;
 
 }
@@ -118,7 +119,7 @@ body {
 .detalle-precio {
     font-size: 2rem;
     font-weight: 700;
-    color: #111827;
+    color:#c0c3ca;
     white-space: nowrap;
     text-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
 }
