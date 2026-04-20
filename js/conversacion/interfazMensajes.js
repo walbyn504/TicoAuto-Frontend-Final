@@ -232,53 +232,77 @@ async function mostrarVehiculoSinConversacion(vehiculoId) {
     preguntaPendienteId = null;
 }
 
+function convertirFechaAOrdenable(fecha) {
+    if (!fecha) return 0;
+
+    // Timestamp numérico o string numérico
+    if (!isNaN(fecha)) {
+        return Number(fecha);
+    }
+}
+
 
 // Muestra en pantalla todos los mensajes de la conversación
 function mostrarMensajes(mensajes) {
     const contenedor = document.getElementById("mensajesChat");
     contenedor.innerHTML = "";
 
-    // Ordena por fecha de la pregunta, del más antiguo al más reciente
-    mensajes.sort((a, b) => new Date(a.pregunta.fechaPregunta) - new Date(b.pregunta.fechaPregunta));
-
-    let ultimoUsuario = null;
+    const mensajesPlano = [];
 
     for (let i = 0; i < mensajes.length; i++) {
         const item = mensajes[i];
 
-        // Mostrar pregunta del usuario con su nombre
-        const usuarioPregunta = item.pregunta.usuario.nombre;
-        const fechaPregunta = formatearFecha(item.pregunta.fechaPregunta);
-
-        // Solo muestra el nombre si es diferente al último mostrado
-        let nombreHTML = "";
-        if (ultimoUsuario !== usuarioPregunta) {
-            nombreHTML = `<div class="nombre">${usuarioPregunta}</div>`;
-            ultimoUsuario = usuarioPregunta;
+        if (item.pregunta) {
+            mensajesPlano.push({
+                tipo: "pregunta",
+                texto: item.pregunta.pregunta,
+                fecha: item.pregunta.fechaPregunta,
+                nombre: item.pregunta.usuario.nombre
+            });
         }
 
-        contenedor.innerHTML += `
-            <div class="mensaje-usuario mb-2">
-                ${nombreHTML}
-                <div class="burbuja usuario">${item.pregunta.pregunta}</div>
-                <div class="fecha">${fechaPregunta}</div>
-            </div>
-        `;
-
-        // Mostrar respuesta del propietario con su nombre
         if (item.respuesta) {
-            const nombreRespuesta = conversacionesAgrupadas[conversacionSeleccionada].propietario;
-            const fechaRespuesta = formatearFecha(item.respuesta.fechaRespuesta);
-            contenedor.innerHTML += `
-            <div class="mensaje-propietario mb-2">
-                <div class="nombre">${nombreRespuesta}</div>
-                <div class="burbuja propietario">${item.respuesta.respuesta}</div>
-                <div class="fecha">${fechaRespuesta}</div>
-            </div> `;
-
-            ultimoUsuario = null;
+            mensajesPlano.push({
+                tipo: "respuesta",
+                texto: item.respuesta.respuesta,
+                fecha: item.respuesta.fechaRespuesta,
+                nombre: conversacionesAgrupadas[conversacionSeleccionada].propietario
+            });
         }
     }
 
-}
+    mensajesPlano.sort((a, b) => {
+        return convertirFechaAOrdenable(a.fecha) - convertirFechaAOrdenable(b.fecha);
+    });
 
+    let ultimoUsuario = null;
+
+    for (let i = 0; i < mensajesPlano.length; i++) {
+        const mensaje = mensajesPlano[i];
+        const fechaFormateada = formatearFecha(mensaje.fecha);
+
+        let nombreHTML = "";
+        if (ultimoUsuario !== mensaje.nombre) {
+            nombreHTML = `<div class="nombre">${mensaje.nombre}</div>`;
+            ultimoUsuario = mensaje.nombre;
+        }
+
+        if (mensaje.tipo === "pregunta") {
+            contenedor.innerHTML += `
+                <div class="mensaje-usuario mb-2">
+                    ${nombreHTML}
+                    <div class="burbuja usuario">${mensaje.texto}</div>
+                    <div class="fecha">${fechaFormateada}</div>
+                </div>
+            `;
+        } else {
+            contenedor.innerHTML += `
+                <div class="mensaje-propietario mb-2">
+                    ${nombreHTML}
+                    <div class="burbuja propietario">${mensaje.texto}</div>
+                    <div class="fecha">${fechaFormateada}</div>
+                </div>
+            `;
+        }
+    }
+}
