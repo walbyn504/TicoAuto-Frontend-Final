@@ -1,6 +1,30 @@
 const apiBaseUrl = 'http://localhost:3001';
 
 let googleCredentialTemp = null;
+let googlecorreo = null;
+
+
+// Función que maneja la respuesta de Google
+function handleGoogleRegisterResponse(response) {
+    console.log('Respuesta de Google:', response);  // Verifica que se recibe la respuesta correctamente
+
+    if (!response || !response.credential) {
+        console.log('No se recibió la credencial de Google');
+        mostrarMensaje('No se recibió la credencial de Google', 'error', 'contenedor-mensajes');
+        return;  // Si no se recibió la credencial, salimos de la función
+    }
+
+    // Almacena la credencia de Google para usarla en el registro
+    googleCredentialTemp = response.credential;
+
+    // Decodifica la credencial de Google
+    const decodedCredential = jwt_decode(response.credential);
+    googlecorreo = decodedCredential.email;
+
+    // Llama a la función para activar el registro con Google
+    activarModoGoogle();
+}
+
 
 // Activa el modo de registro con Google
 function activarModoGoogle() {
@@ -14,7 +38,7 @@ function activarModoGoogle() {
     document.getElementById('bloqueCredenciales').style.display = 'none';
 
     // Extrae el correo electrónico de googleCredentialTemp
-    const correoGoogle = googleCredentialTemp && googleCredentialTemp.email ? googleCredentialTemp.email : 'Cuenta no disponible';
+    const correoGoogle = googlecorreo || 'Correo no disponible';
 
     
     mostrarMensaje(
@@ -217,22 +241,3 @@ async function registrarUsuario() {
     }
 }
 
-// Función que maneja la respuesta de Google
-function handleGoogleRegisterResponse(response) {
-    console.log('Respuesta de Google:', response);  // Verifica que se recibe la respuesta correctamente
-
-    if (!response || !response.credential) {
-        console.log('No se recibió la credencial de Google');
-        mostrarMensaje('No se recibió la credencial de Google', 'error', 'contenedor-mensajes');
-        return;  // Si no se recibió la credencial, salimos de la función
-    }
-
-    // Decodifica la credencial de Google
-    const decodedCredential = jwt_decode(response.credential);
-
-    // Asigna el correo de Google a googleCredentialTemp
-    googleCredentialTemp = decodedCredential;
-
-    // Llama a la función para activar el registro con Google
-    activarModoGoogle();
-}
