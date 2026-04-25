@@ -17,15 +17,19 @@
     <div class="container mt-4">
         <div class="row chat-wrapper g-0">
 
+            <!-- Barra lateral para listar conversaciones-->
             <div class="col-4 sidebar">
                 <div class="sidebar-header">
+                    <!-- Botón para volver a la página anterior-->
                     <button class="btn-volver" onclick="volverPagina()" title="Volver">
                         <i class="bi bi-arrow-left"></i>
                     </button>
                 </div>
 
+                <!-- Lista de conversaciones-->
                 <div id="listaConversaciones"></div>
 
+                <!-- Información de usuario en la barra lateral-->
                 <div class="sidebar-footer">
                     <div class="sidebar-user-info">
                         <div class="sidebar-user-avatar">
@@ -40,10 +44,12 @@
                 </div>
             </div>
 
+            <!-- Área principal de conversaciones-->
             <div class="col-8 p-0">
                 <div class="chat-area">
                     <div class="chat-header">
                         <div class="chat-header-info">
+                            <!-- Encabezado de conversación-->
                             <span id="encabezadoChat">No has iniciado una conversación</span>
                             <small class="chat-subtitle">Consulta y responde mensajes de vehículos</small>
                         </div>
@@ -55,13 +61,15 @@
                     <div class="chat-body" id="mensajesChat"></div>
 
                     <div class="chat-footer">
-                        <!-- MENSAJE DEL INPUT -->
+                        <!-- Mesaje de pie de la página -->
                         <div id="mensaje-footer-chat" class="text-center mb-2"></div>
 
+                        <!-- Campo de texto para escribir mensajes -->
                         <div class="input-group chat-input-group">
                             <textarea id="textoPregunta" class="form-control chat-textarea" rows="2"
                                 placeholder="Escribe tu mensaje"></textarea>
 
+                            <!-- Botón para enviar el mensaje -->
                             <button class="btn btn-enviar" onclick="enviarMensaje()">
                                 <i class="bi bi-send-fill me-1"></i>
                                 Enviar

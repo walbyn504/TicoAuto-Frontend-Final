@@ -1,7 +1,12 @@
-window.onload = function () {
-    verificarUsuario();
-    obtenerVehiculos();
+// Lógica para gestionar los vehículos del usuario: obtener vehículos, mostrar vehículos,
+// editar, eliminar y marcar vehículos como vendidos.
 
+// Al cargar la página, verifica el estado de sesión y obtiene los vehículos del usuario
+window.onload = function () {
+    verificarUsuario();// Verifica si el usuario está autenticado
+    obtenerVehiculos(); // Obtiene los vehículos del usuario
+
+    // Si hay un mensaje de éxito o error, lo muestra y lo limpia
     const mensaje = sessionStorage.getItem('mensajeGlobal');
     const tipo = sessionStorage.getItem('tipoMensaje');
 
@@ -13,11 +18,12 @@ window.onload = function () {
     }
 };
 
-
+// Función para obtener los vehículos del usuario desde la API
 async function obtenerVehiculos() {
 
     limpiarMensaje("mensaje-gestion-vehiculo");
 
+     // Si no hay token, redirige al usuario al inicio de sesión
     if (!token) {
         mostrarMensaje("Debe iniciar sesión.", "error", "mensaje-gestion-vehiculo");
         setTimeout(() => {
@@ -27,6 +33,7 @@ async function obtenerVehiculos() {
     }
 
     try {
+        // Define la consulta GraphQL
         const query = `
             query {
                 obtenerMisVehiculos {
@@ -62,8 +69,9 @@ async function obtenerVehiculos() {
             body: JSON.stringify({ query })
         });
 
-        const data = await response.json();
+        const data = await response.json(); // Convierte la respuesta en formato JSON
 
+        // Si la respuesta contiene errores, muestra el mensaje de error
         if (!response.ok || data.errors) {
             const mensaje = data?.errors?.[0]?.message || "Error al cargar vehículos.";
 
@@ -81,6 +89,7 @@ async function obtenerVehiculos() {
             return;
         }
 
+        // Muestra los vehículos obtenidos de la respuesta
         mostrarVehiculos(data.data.obtenerMisVehiculos);
 
     } catch (error) {
@@ -88,10 +97,12 @@ async function obtenerVehiculos() {
     }
 }
 
+// Función para mostrar los vehículos obtenidos en la interfaz
 function mostrarVehiculos(vehiculos) {
     const container = document.getElementById("vehiculosContainer");
     container.innerHTML = "";
 
+    // Si no hay vehículos, muestra un mensaje informando al usuario
     if (!vehiculos || vehiculos.length === 0) {
         container.innerHTML = `
             <div class="col-12 text-center text-white mt-4">
@@ -102,6 +113,7 @@ function mostrarVehiculos(vehiculos) {
         return;
     }
 
+    // Muestra los vehículos en forma de tarjetas (cards)
     vehiculos.forEach(v => {
         const card = document.createElement("div");
         card.className = "col-md-4 mb-4";
@@ -141,10 +153,12 @@ function mostrarVehiculos(vehiculos) {
     });
 }
 
+// Función para redirigir a la página de edición de un vehículo
 function editarVehiculo(id) {
     location.href = `/html/vehiculo/formularioVehiculo.html?id=${id}`;
 }
 
+// Función para eliminar un vehículo
 async function eliminarVehiculo(id) {
     if (!confirmarEliminacion()) return;
 
@@ -171,6 +185,7 @@ async function eliminarVehiculo(id) {
             return;
         }
 
+        // Refresca los vehículos después de eliminar uno
         await obtenerVehiculos();
         mostrarMensaje(data.message || "Vehículo eliminado", "success", "mensaje-gestion-vehiculo");
 
@@ -179,14 +194,17 @@ async function eliminarVehiculo(id) {
     }
 }
 
+// Función para confirmar la eliminación de un vehículo
 function confirmarEliminacion() {
     return confirm("¿Seguro que desea eliminar este vehículo?");
 }
 
+// Función para confirmar la venta de un vehículo
 function confirmarVendido() {
     return confirm("¿Seguro que desea marcar como vendido este vehículo?");
 }
 
+// Función para marcar un vehículo como vendido
 async function marcarVendido(id) {
     if (!confirmarVendido()) return;
 

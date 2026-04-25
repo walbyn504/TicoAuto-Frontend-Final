@@ -7,18 +7,21 @@ async function initVehiculo() {
 
     limpiarMensaje("mensaje-form-vehiculo");
 
+    // Verifica si el usuario está autenticado
     if (!token) {
         mostrarMensaje("Debe iniciar sesión", "error", "mensaje-form-vehiculo");
 
+        // Redirige al usuario al inicio de sesión después de 2.5 segundos
         setTimeout(() => {
             location.href = "/html/usuario/inicioSesion.html";
         }, 2500);
         return;
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
+    const urlParams = new URLSearchParams(window.location.search); // Obtiene los parámetros de la URL
+    const id = urlParams.get('id'); // Obtiene los parámetros de la URL
 
+    // Si el ID existe, carga el vehículo para edición
     if (id) {
         await cargarVehiculo(id);
     }
@@ -30,6 +33,7 @@ async function cargarVehiculo(id) {
     try {
         limpiarMensaje("mensaje-form-vehiculo");
 
+        // Define la consulta GraphQL para obtener los datos del vehículo a editar
         const query = `
             query {
                 obtenerVehiculoEdicion(id: "${id}") {
@@ -47,6 +51,7 @@ async function cargarVehiculo(id) {
             }
         `;
 
+         // Realiza la solicitud a la API GraphQL para obtener el vehículo
         const response = await fetch(`${apiBaseUrl}/graphql`, {
             method: 'POST',
             headers: {
@@ -56,15 +61,15 @@ async function cargarVehiculo(id) {
             body: JSON.stringify({ query })
         });
 
-        const data = await response.json();
+        const data = await response.json(); // Obtiene la respuesta de la API
 
         if (!response.ok || data.errors) {
             const mensaje = data?.errors?.[0]?.message || "No se pudo cargar el vehículo";
             throw new Error(mensaje);
         }
 
-        const vehiculo = data.data.obtenerVehiculoEdicion;
-        llenarFormulario(vehiculo);
+        const vehiculo = data.data.obtenerVehiculoEdicion; // Obtiene los datos del vehículo
+        llenarFormulario(vehiculo); // Llena el formulario con los datos del vehículo
 
     } catch (error) {
         mostrarMensaje(error.message || "No se pudo cargar el vehículo", "error", "mensaje-form-vehiculo");
@@ -73,7 +78,7 @@ async function cargarVehiculo(id) {
 
 // --- Llenar formulario con los datos del vehículo ---
 function llenarFormulario(vehiculo) {
-    const form = document.getElementById('formVehiculo');
+    const form = document.getElementById('formVehiculo'); // Obtiene el formulario
     form.vehiculoId.value = vehiculo.id;
     form.marca.value = vehiculo.marca;
     form.modelo.value = vehiculo.modelo;
@@ -84,6 +89,7 @@ function llenarFormulario(vehiculo) {
     form.transmision.value = vehiculo.transmision;
     form.condicion.value = vehiculo.condicion;
 
+    // Si el vehículo tiene una imagen, la muestra en la vista previa
     if (vehiculo.imagen) {
         const preview = document.getElementById('vistaPrevia');
         preview.src = `${apiBaseUrl}/imagenes/${vehiculo.imagen}`;
@@ -102,15 +108,17 @@ async function guardarVehiculo() {
     const color = form.color.value.trim();
     const transmision = form.transmision.value;
     const condicion = form.condicion.value;
-    const imagen = document.getElementById("imagen").files[0];
+    const imagen = document.getElementById("imagen").files[0]; // Obtiene la imagen seleccionada
 
     limpiarMensaje("mensaje-form-vehiculo");
 
+     // Verifica que todos los campos estén completos y sean válidos
     if (!marca || !modelo || !color || isNaN(anno) || isNaN(precio) || !combustible || !transmision || !condicion) {
         mostrarMensaje("Complete todos los campos correctamente", "error", "mensaje-form-vehiculo");
         return;
     }
 
+    // Verifica que el año y el precio sean válidos
     if (anno < 0) {
         mostrarMensaje("El año no puede ser negativo", "error", "mensaje-form-vehiculo");
         return;
@@ -121,11 +129,13 @@ async function guardarVehiculo() {
         return;
     }
 
+    // Si no se está editando el vehículo y no se seleccionó una imagen, muestra un error
     if (!id && !imagen) {
         mostrarMensaje("Seleccione una imagen para el vehículo", "error", "mensaje-form-vehiculo");
         return;
     }
 
+    // Crea un objeto FormData para enviar los datos del formulario (incluyendo la imagen)
     const formData = new FormData();
     formData.append('marca', marca);
     formData.append('modelo', modelo);
@@ -136,6 +146,7 @@ async function guardarVehiculo() {
     formData.append('transmision', transmision);
     formData.append('condicion', condicion);
 
+    // Si hay una imagen seleccionada, la agrega al FormData
     if (imagen) {
         formData.append('imagen', imagen);
     }
@@ -150,7 +161,7 @@ async function guardarVehiculo() {
             }
         );
 
-        const data = await response.json();
+        const data = await response.json(); // Obtiene la respuesta de la API
 
         if (!response.ok) {
             mostrarMensaje(data.message || "No se pudo guardar el vehículo", "error", "mensaje-form-vehiculo");

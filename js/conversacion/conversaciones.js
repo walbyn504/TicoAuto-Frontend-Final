@@ -1,7 +1,9 @@
+// Funcion para cargar las conversaciones del usuario
 async function cargarConversaciones() {
     try {
-        limpiarMensaje("mensaje-chat");
+        limpiarMensaje("mensaje-chat"); // Limpia cualquier mensaje anterior en la interfaz
 
+        // Define la consulta GraphQL para obtener las conversaciones del usuario
         const query = `
             query {
                 obtenerMisConversaciones {
@@ -27,34 +29,40 @@ async function cargarConversaciones() {
             }
         `;
 
+        // Realiza la solicitud a la API GraphQL
         const response = await fetch(`${apiBaseUrl}/graphql`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ query })
+            body: JSON.stringify({ query }) // Envia la consulta GraphQL en el cuerpo de la solicitud
         });
 
+        // Convierte la respuesta en formato JSON
         const resultado = await response.json();
 
+        // Si hay errores en la respuesta, muestra un mensaje de error
         if (resultado.errors) {
             mostrarMensaje(resultado.errors[0].message || "Error al cargar conversaciones", "error", "mensaje-chat");
             return;
         }
 
+         // Extrae las preguntas de las conversaciones obtenidas
         const misPreguntas = resultado.data.obtenerMisConversaciones;
         const preguntasDeMisVehiculos = resultado.data.obtenerConversacionesDeMisVehiculos;
 
+        // Combina las preguntas en una sola lista
         const todasLasPreguntas = [
             ...misPreguntas,
             ...preguntasDeMisVehiculos
         ];
 
+        // Agrupa las conversaciones por vehiculo e interasado
         conversacionesAgrupadas = {};
 
         agruparConversacionesPorVehiculo(todasLasPreguntas);
-        await mostrarListaConversaciones();
+        await mostrarListaConversaciones(); // Muestra las conversaciones agrupadas
 
     } catch (error) {
         console.error(error);
@@ -118,18 +126,22 @@ async function abrirConversacionInicial(conversaciones) {
         return;
     }
 
+    // Si hay un ID de vehículo en la URL, busca la conversación relacionada con ese vehículo
     if (vehiculoIdUrl) {
         for (let i = 0; i < conversaciones.length; i++) {
+            // Si la conversación pertenece al vehículo con el ID en la URL, la selecciona
             if (conversaciones[i].vehiculoId === vehiculoIdUrl) {
                 await seleccionarConversacion(conversaciones[i].conversacionId);
                 return;
             }
         }
 
+        // Si no se encuentra una conversación para ese vehículo, muestra el chat vacío para ese vehículo
         await seleccionarConversacion(vehiculoIdUrl);
         return;
     }
 
+    // Si no hay conversaciones, muestra un mensaje indicando que no hay conversaciones disponibles
     if (conversaciones.length > 0) {
         await seleccionarConversacion(conversaciones[0].conversacionId);
         return;

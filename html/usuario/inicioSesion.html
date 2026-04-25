@@ -9,31 +9,31 @@
     <link rel="stylesheet" href="../../css/inicioSesion.css">
     <link rel="stylesheet" href="../../css/mensajes.css">
 
-    <!-- Google Identity Services -->
+    <!-- Google Identity Services (Autenticación con Google) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 </head>
 
 <body>
 
+    <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg px-3">
-
         <div class="ms-auto d-flex gap-2 me-3">
-
             <a href="/index.html" class="btn btn-outline-light">
-                ↪
+                X
             </a>
-
         </div>
-
     </nav>
 
+    <!-- Contenedor de inicio de sesión-->
     <div class="contenedor-login">
 
         <div class="card-login">
 
+            <!-- Título de la página de inicio sesión -->
             <h2 class="titulo-login mb-4 text-center">Iniciar Sesión</h2>
 
+            <!-- Contenedor para mensajes de error o éxito-->
             <div id="contenedor-mensajes"></div>
 
             <input type="email" id="correo" class="form-control input-auto mb-3" placeholder="Correo Electrónico">
@@ -41,6 +41,7 @@
             <input type="password" id="contrasenna" class="form-control input-auto mb-3" placeholder="Contraseña"
                 autocomplete="new-password">
 
+                <!-- Botón para inicio sesión -->
             <div class="d-grid gap-2 mb-3">
                 <button onclick="iniciarSesion()" class="btn btn-auto">
                     Ingresar

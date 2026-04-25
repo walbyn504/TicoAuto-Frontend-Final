@@ -1,10 +1,13 @@
+// Lógica para manejar la búsqueda de vehículos con filtros y paginación usando GraphQL.
+// Incluye la validación de filtros, la obtención de datos desde la API, la visualización de resultados
+
 let paginaActual = 1;
 let totalPaginas = 1;
 
 // --- Función principal: inicializa la página ---
 async function initFiltroVehiculos() {
-    verificarUsuario();
-    await ejecutarBusqueda(1);
+    verificarUsuario(); // Verifica si el usuario está autenticado
+    await ejecutarBusqueda(1); // Ejecuta la búsqueda de vehículos en la página 1
 }
 
 // Ejecuta la búsqueda de vehículos con filtros y paginación usando GraphQL
@@ -14,17 +17,19 @@ async function ejecutarBusqueda(page = paginaActual) {
 
         limpiarMensaje("mensaje-filtros");
 
-        const filtros = obtenerFiltrosBusqueda();
+        const filtros = obtenerFiltrosBusqueda(); // Obtiene los filtros aplicados
 
+        // Si los filtros no son válidos, detiene la ejecución
         if (!validarFiltros(filtros)) {
             return;
         }
 
-        const limit = 3;
+        const limit = 3;  // Define el límite de resultados por página
 
         // Mantener la URL bonita para paginación/filtros
         const params = new URLSearchParams();
 
+        // Añade los filtros a la URL
         if (filtros.marca) params.append('marca', filtros.marca);
         if (filtros.modelo) params.append('modelo', filtros.modelo);
         if (filtros.anno_min) params.append('anno_min', filtros.anno_min);
@@ -36,11 +41,13 @@ async function ejecutarBusqueda(page = paginaActual) {
         params.append('page', paginaActual);
         params.append('limit', limit);
 
+        // Actualiza la URL del navegador sin recargar la página
         history.replaceState(null, "", "?" + params.toString());
 
         // Construcción dinámica de argumentos GraphQL
         const argumentos = [];
 
+        // Añade los filtros a los argumentos de la consulta
         if (filtros.marca) argumentos.push(`marca: ${JSON.stringify(filtros.marca)}`);
         if (filtros.modelo) argumentos.push(`modelo: ${JSON.stringify(filtros.modelo)}`);
         if (filtros.anno_min) argumentos.push(`anno_min: ${parseInt(filtros.anno_min)}`);
@@ -49,9 +56,12 @@ async function ejecutarBusqueda(page = paginaActual) {
         if (filtros.precio_max) argumentos.push(`precio_max: ${parseInt(filtros.precio_max)}`);
         if (filtros.estado) argumentos.push(`estado: ${JSON.stringify(filtros.estado)}`);
 
+
+        // Añade los parámetros de paginación a los argumentos
         argumentos.push(`page: ${paginaActual}`);
         argumentos.push(`limit: ${limit}`);
 
+        // Construcción de la consulta GraphQL
         const query = `
             query {
                 filtroVehiculos(${argumentos.join(", ")}) {
@@ -78,11 +88,12 @@ async function ejecutarBusqueda(page = paginaActual) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ query })
+            body: JSON.stringify({ query }) // Envia la consulta GraphQL en el cuerpo de la solicitud
         });
 
-        const resultado = await response.json();
+        const resultado = await response.json(); // Obtiene la respuesta de la API
 
+        // Si la respuesta contiene errores o no es exitosa, muestra un mensaje de error
         if (!response.ok || resultado.errors) {
             const mensaje =
                 resultado?.errors?.[0]?.message ||
@@ -96,19 +107,20 @@ async function ejecutarBusqueda(page = paginaActual) {
 
         const data = resultado.data.filtroVehiculos;
 
+        // Si no hay vehículos encontrados, muestra un mensaje
         if (!data.vehiculos || data.vehiculos.length === 0) {
             mostrarMensajeSinResultados();
             totalPaginas = 1;
-            document.getElementById("numeroPagina").textContent = "1";
+            document.getElementById("numeroPagina").textContent = "1"; // Muestra la primera página
             return;
         }
 
-        mostrarVehiculos(data.vehiculos);
+        mostrarVehiculos(data.vehiculos);  // Muestra los vehículos encontrados
 
         paginaActual = data.paginaActual;
         totalPaginas = data.totalPaginas;
 
-        document.getElementById("numeroPagina").textContent = paginaActual;
+        document.getElementById("numeroPagina").textContent = paginaActual; // Muestra la página actual
 
     } catch (error) {
         mostrarMensaje("No se pudo conectar al servidor", "error", "mensaje-filtros");
@@ -132,6 +144,7 @@ function obtenerFiltrosBusqueda() {
 function validarFiltros(filtros) {
     const { anno_min, anno_max, precio_min, precio_max } = filtros;
 
+    // Valida que los años y precios no sean negativos
     if (anno_min && Number(anno_min) < 0) {
         mostrarMensaje("El año mínimo no puede ser negativo", "error", "mensaje-filtros");
         refrescarSinBusqueda();
@@ -156,6 +169,7 @@ function validarFiltros(filtros) {
         return false;
     }
 
+     // Valida que el año mínimo no sea mayor que el máximo y lo mismo para los precios
     if (anno_min && anno_max && Number(anno_min) > Number(anno_max)) {
         mostrarMensaje("El año mínimo no puede ser mayor al año máximo", "error", "mensaje-filtros");
         return false;
@@ -180,17 +194,18 @@ function mostrarMensajeSinResultados() {
     `;
 }
 
+// Funciones para navegar entre las páginas de resultados
 function paginaSiguiente() {
     if (paginaActual < totalPaginas) {
         paginaActual++;
-        ejecutarBusqueda(paginaActual);
+        ejecutarBusqueda(paginaActual);// Ejecuta la búsqueda para la siguiente página
     }
 }
 
 function paginaAnterior() {
     if (paginaActual > 1) {
         paginaActual--;
-        ejecutarBusqueda(paginaActual);
+        ejecutarBusqueda(paginaActual);  // Ejecuta la búsqueda para la página anterior
     }
 }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Mis Vehículos</title>
@@ -12,9 +13,13 @@
     <link rel="stylesheet" href="../../css/mensajes.css">
     <link rel="stylesheet" href="/css/filtroVehiculos.css">
 </head>
+
 <body>
 
+    <!-- Barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+
+         <!-- Menú de opciones en la barra de navegación -->
         <div id="menuOpciones"></div>
 
         <div class="titulo-centro text-white fw-bold">
@@ -25,21 +30,27 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Contenido del menú de navegación -->
         <div class="collapse navbar-collapse" id="menuNav">
             <div class="ms-auto d-flex align-items-center">
+                <!-- Nombre del usuario conectado -->
                 <span class="text-white fs-5 me-3" id="nombreUsuario"></span>
                 <div id="botonesUsuario"></div>
             </div>
         </div>
     </nav>
 
+    <!-- Contenedor principal de la página -->
     <div class="container mt-5 mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Título de la sección de vehículos -->
             <h1 class="text-white fw-bold">Mis Vehículos</h1>
         </div>
 
+        <!-- Mensajes de gestión de vehículos (ej. errores, notificaciones) -->
         <div id="mensaje-gestion-vehiculo" class="text-center mb-3"></div>
 
+         <!-- Contenedor para las tarjetas de vehículos -->
         <div class="row" id="vehiculosContainer">
             <!-- Aquí se generarán las cards -->
         </div>
@@ -51,4 +62,5 @@
     <script src="../../js/vehiculo/configuracion.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

@@ -9,20 +9,26 @@
     <link rel="stylesheet" href="../../css/registro.css">
     <link rel="stylesheet" href="../../css/mensajes.css">
 
+    <!-- Google Identity Services (para autenticación con Google) -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
 
+      <!-- Contenedor principal del formulario de registro -->
     <div class="panel-formulario">
         <div class="card-neon">
 
+            <!-- Título de la página de registro -->
             <h1 class="titulo-formulario mb-4">Registro de Usuario</h1>
 
+            <!-- Contenedor para mensajes de error o éxito -->
             <div id="contenedor-mensajes"></div>
 
+            <!-- Campo oculto para modo Google (para saber si se está usando Google para registrarse) -->
             <input type="hidden" id="modoGoogle" value="false">
 
+             <!-- Input de cédula con un botón para consultar la cédula -->
             <div class="d-flex gap-2 mb-3">
                 <input type="text" id="cedula" class="form-control" placeholder="Cédula (Eje: 201110222)">
 
@@ -31,6 +37,7 @@
                 </button>
             </div>
 
+                <!-- Campos de texto para nombre y apellidos, solo lectura -->
             <input type="text" id="nombre" class="form-control mb-3" placeholder="Nombre" readonly>
             <input type="text" id="primerApellido" class="form-control mb-3" placeholder="Primer apellido" readonly>
             <input type="text" id="segundoApellido" class="form-control mb-3" placeholder="Segundo apellido" readonly>

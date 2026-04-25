@@ -124,30 +124,37 @@ function crearItemConversacion(c, esPropietario, pendiente) {
     return item;
 }
 
+// Función para seleccionar una conversación específica y mostrar su contenido.
 async function seleccionarConversacion(conversacionId) {
-    conversacionSeleccionada = conversacionId;
+    conversacionSeleccionada = conversacionId; // Asigna el ID de la conversación seleccionada
     document.getElementById("textoPregunta").value = "";
 
     // Borra mensaje del chat anterior
     limpiarMensaje("mensaje-chat");
 
+    // Elimina la clase "activo" de todas las conversaciones en la lista
     const items = document.querySelectorAll(".chat-item");
     items.forEach(item => item.classList.remove("activo"));
 
+    // Obtiene la conversación seleccionada de las conversaciones agrupadas
     const conversacion = conversacionesAgrupadas[conversacionId];
 
     if (conversacion) {
+        // Si se encuentra la conversación, busca su índice en la lista de conversaciones agrupadas
         const conversaciones = Object.values(conversacionesAgrupadas);
         const index = conversaciones.findIndex(c => c.conversacionId === conversacionId);
 
+        // Si se encuentra la conversación en la lista, marca el item correspondiente como activo
         if (index !== -1 && items[index]) {
             items[index].classList.add("activo");
         }
 
+        // Muestra el contenido de la conversación existente
         mostrarConversacionExistente(conversacion);
         return;
     }
 
+    // Si la conversación no existe, muestra un mensaje indicando que no hay conversación para el vehículo
     await mostrarVehiculoSinConversacion(conversacionId);
 }
 
@@ -201,20 +208,25 @@ function mostrarConversacionExistente(conversacion) {
     }
 }
 
+// Muestra los detalles del vehículo y permite al usuario enviar una pregunta si es el caso.
 async function mostrarVehiculoSinConversacion(vehiculoId) {
 
+    // Obtiene la información del vehículo utilizando su ID
     const vehiculo = await obtenerVehiculo(vehiculoId);
 
+    // Si no se encuentra el vehículo, muestra un mensaje de error
     if (!vehiculo) {
         document.getElementById("encabezadoChat").textContent = "Vehículo no encontrado";
         document.getElementById("mensajesChat").innerHTML = "";
         return;
     }
 
+    // Si el vehículo se encuentra, muestra los detalles en el encabezado del chat
     document.getElementById("encabezadoChat").textContent =
     `Propietario: ${vehiculo.usuario.nombre} | Datos vehículo: ${vehiculo.marca} ${vehiculo.modelo}`;
 
-        
+     
+    // Muestra un mensaje indicando que no hay conversaciones disponibles
     document.getElementById("mensajesChat").innerHTML = `
     <div class="chat-vacio">
         <div>
@@ -229,6 +241,7 @@ async function mostrarVehiculoSinConversacion(vehiculoId) {
         modoEnvio = "pregunta";
     }
 
+    // Limpia cualquier pregunta pendiente
     preguntaPendienteId = null;
 }
 
@@ -244,14 +257,17 @@ function convertirFechaAOrdenable(fecha) {
 
 // Muestra en pantalla todos los mensajes de la conversación
 function mostrarMensajes(mensajes) {
+    // Obtiene el contenedor donde se mostrarán los mensajes
     const contenedor = document.getElementById("mensajesChat");
     contenedor.innerHTML = "";
 
-    const mensajesPlano = [];
+    const mensajesPlano = []; // Arreglo que almacenará los mensajes de forma plana
 
+    // Recorre los mensajes y los organiza en formato plano (pregunta o respuesta)
     for (let i = 0; i < mensajes.length; i++) {
         const item = mensajes[i];
 
+        // Si el mensaje es una pregunta, lo agrega al arreglo de mensajesPlano
         if (item.pregunta) {
             mensajesPlano.push({
                 tipo: "pregunta",
@@ -261,6 +277,7 @@ function mostrarMensajes(mensajes) {
             });
         }
 
+        // Si el mensaje es una respuesta, lo agrega al arreglo de mensajesPlano
         if (item.respuesta) {
             mensajesPlano.push({
                 tipo: "respuesta",
@@ -271,22 +288,28 @@ function mostrarMensajes(mensajes) {
         }
     }
 
+    // Ordena los mensajes por fecha (de más antiguo a más reciente)
     mensajesPlano.sort((a, b) => {
         return convertirFechaAOrdenable(a.fecha) - convertirFechaAOrdenable(b.fecha);
     });
 
+    // Variable para verificar el último usuario que envió un mensaje
     let ultimoUsuario = null;
 
+    // Recorre los mensajes ordenados y los muestra en la interfaz
     for (let i = 0; i < mensajesPlano.length; i++) {
         const mensaje = mensajesPlano[i];
-        const fechaFormateada = formatearFecha(mensaje.fecha);
+        const fechaFormateada = formatearFecha(mensaje.fecha); // Formatea la fecha del mensaje
 
+
+        // Si el nombre del usuario ha cambiado, muestra el nombre del usuario
         let nombreHTML = "";
         if (ultimoUsuario !== mensaje.nombre) {
             nombreHTML = `<div class="nombre">${mensaje.nombre}</div>`;
-            ultimoUsuario = mensaje.nombre;
+            ultimoUsuario = mensaje.nombre; // Actualiza el último usuario
         }
 
+        // Si el mensaje es una pregunta, se agrega con la clase "usuario"
         if (mensaje.tipo === "pregunta") {
             contenedor.innerHTML += `
                 <div class="mensaje-usuario mb-2">
@@ -296,6 +319,7 @@ function mostrarMensajes(mensajes) {
                 </div>
             `;
         } else {
+             // Si el mensaje es una respuesta, se agrega con la clase "propietario"
             contenedor.innerHTML += `
                 <div class="mensaje-propietario mb-2">
                     ${nombreHTML}

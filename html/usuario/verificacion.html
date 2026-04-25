@@ -7,12 +7,14 @@
     <h2>Verificando tu cuenta...</h2>
 
     <script>
+        //Verificar la cuenta del usuario
         const verificarCuenta = async () => {
             try {
+                //Obtiene el token de la URL
                 const params = new URLSearchParams(window.location.search);
                 const token = params.get("token");
 
-                // No existe el token en el URL
+                // No existe el token en el URL, redirige a una página de error
                 if (!token) {
                     window.location.href = "/html/usuario/verificacionError.html";
                     return;
@@ -22,10 +24,11 @@
                 const res = await fetch(`http://localhost:3001/api/autenticacion/verificacion?token=${token}`);
 
                 
-                // Redirigir según resultado de la verificación
+                // Redirigir según resultado de la verificación, redirige a la página de éxito
                 if (res.status === 200) {
                     window.location.href = "/html/usuario/verificacionExitosa.html";
                 } else {
+                      // Si la verificación falla, redirige a la página de error
                     window.location.href = "/html/usuario/verificacionError.html";
                 }
 
@@ -34,6 +37,7 @@
             }
         };
 
+        // Ejecuta la función de verificación al cargar la página
         verificarCuenta();
     </script>
 </body>

@@ -1,16 +1,23 @@
+// Función para mostrar los vehículos en la interfaz de usuario
+
 function mostrarVehiculos(vehiculos) {
+    // Obtiene el contenedor donde se mostrarán los vehículos
     const contenedor = document.getElementById('vehiculosContainer');
     contenedor.innerHTML = '';
 
+    // Verifica si el usuario está autenticado
     const usuarioLogueado = usuarioPayload !== null;
     const usuarioLogueadoId = usuarioPayload ? usuarioPayload.id : null;
 
+    // Itera sobre cada vehículo y genera una tarjeta para mostrarlo
     vehiculos.forEach(v => {
         const card = document.createElement("div");
         card.className = "col-md-4 mb-4";
 
+        // Verifica si el vehículo pertenece al usuario logueado
         const esMiVehiculo = usuarioLogueadoId === v.usuario?.id;
 
+        // Configura el contenido de la tarjeta
         card.innerHTML = `
             <div class="card h-100">
                 <img src="${apiBaseUrl}/imagenes/${v.imagen}" 
@@ -39,7 +46,7 @@ function mostrarVehiculos(vehiculos) {
                 </div>
             </div>
         `;
-
+        // Añade la tarjeta al contenedor de vehículos
         contenedor.appendChild(card);
     });
 }
