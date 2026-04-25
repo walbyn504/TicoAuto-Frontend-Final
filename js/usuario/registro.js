@@ -17,7 +17,7 @@ function handleGoogleRegisterResponse(response) {
     // Almacena la credencia de Google para usarla en el registro
     googleCredentialTemp = response.credential;
 
-    // Decodifica la credencial de Google
+    // Decodifica la credencial para obtener el correo
     const decodedCredential = jwt_decode(response.credential);
     googlecorreo = decodedCredential.email;
 
@@ -37,7 +37,7 @@ function activarModoGoogle() {
     // Oculta los campos de credenciales tradicionales (correo y contraseña)
     document.getElementById('bloqueCredenciales').style.display = 'none';
 
-    // Extrae el correo electrónico de googleCredentialTemp
+    // Obtiene el correo de Google
     const correoGoogle = googlecorreo || 'Correo no disponible';
 
     
@@ -54,7 +54,7 @@ function activarModoGoogle() {
 async function consultarCedula() {
     const cedula = document.getElementById('cedula').value.trim();  // Obtiene la cédula
 
-        // Si no se ingresa la cédula, muestra un mensaje de error
+    // Si no se ingresa la cédula, muestra un mensaje de error
     if (!cedula) {
         mostrarMensaje('La cédula es obligatoria', 'error', 'contenedor-mensajes');
         return;
@@ -68,6 +68,7 @@ async function consultarCedula() {
     }
 
     try {
+        // Consulta al padrón
         const response = await fetch(`${apiBaseUrl}/api/padron/${cedula}`);
         const data = await response.json();
 
@@ -77,7 +78,7 @@ async function consultarCedula() {
             document.getElementById('primerApellido').value = '';
             document.getElementById('segundoApellido').value = '';
 
-             // Muestra un mensaje según el resultado de la consulta
+            // Muestra un mensaje según el resultado de la consulta
             if (response.status === 404) {
                 mostrarMensaje('La cédula no se encuentra en el padrón', 'error', 'contenedor-mensajes');
             } else {
@@ -99,11 +100,134 @@ async function consultarCedula() {
     }
 }
 
-// Función para registrar un usuario
-async function registrarUsuario() {
-    const modoGoogle = document.getElementById('modoGoogle').value === 'true'; // Verifica si se usa Google para el registro
 
-    // Obtiene los valores del formulario
+// Validaciones 
+function validarCampos({ cedula, telefono, correo, contrasenna, modoGoogle }) {
+    // Validar campos comunes
+    if (!cedula || !telefono) {
+        mostrarMensaje('La cédula y el teléfono son obligatorios', 'error', 'contenedor-mensajes');
+        return false;
+    }
+
+    // Validar cédula
+    const regexCedula = /^\d{9}$/;
+    if (!regexCedula.test(cedula)) {
+        mostrarMensaje('La cédula debe tener exactamente 9 dígitos', 'error', 'contenedor-mensajes');
+        return false;
+    }
+
+    // Validar teléfono
+    const regexTelefono = /^[0-9]{8,}$/;
+    if (!regexTelefono.test(telefono)) {
+        mostrarMensaje('El teléfono debe tener al menos 8 dígitos', 'error', 'contenedor-mensajes');
+        return false;
+    }
+
+    // Validaciones adicionales solo si es registro tradicional
+    if (!modoGoogle) {
+        if (!correo || !contrasenna) {
+            mostrarMensaje('El correo y la contraseña son obligatorios', 'error', 'contenedor-mensajes');
+            return false;
+        }
+
+        // Formato de correo requerido
+        const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexCorreo.test(correo)) {
+            mostrarMensaje('El formato del correo no es válido', 'error', 'contenedor-mensajes');
+            return false;
+        }
+
+        // Formato de contraseña requerido
+        const tieneMin = /[a-z]/.test(contrasenna);
+        const tieneMay = /[A-Z]/.test(contrasenna);
+        const tieneNumero = /\d/.test(contrasenna);
+        const tieneEspecial = /[@$!%*?&.#_-]/.test(contrasenna);
+        const largoMinimo = contrasenna.length >= 8;
+
+        if (!(tieneMin && tieneMay && tieneNumero && tieneEspecial && largoMinimo)) {
+            mostrarMensaje(
+                'La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.',
+                'error',
+                'contenedor-mensajes'
+            );
+            return false;
+        }
+    }
+
+    // Si todas las validaciones pasan, retorna true
+    return true; 
+}
+
+
+
+// Registro con Google
+async function registrarConGoogle(cedula, telefono) {
+    if (!googleCredentialTemp) {
+        mostrarMensaje('Primero debes registrarte con Google', 'error', 'contenedor-mensajes');
+        return;
+    }
+
+    try {
+        // Enviar la credencial de Google junto con la cédula y el teléfono al backend para el registro
+        const response = await fetch(`${apiBaseUrl}/api/autenticacion/google`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential: googleCredentialTemp, cedula, telefono })
+        });
+
+        const data = await response.json();
+
+        // Si la respuesta no es exitosa, muestra el mensaje de error
+        if (!response.ok) {
+            mostrarMensaje(data.message || 'No se pudo registrar con Google', 'error', 'contenedor-mensajes');
+            return;
+        }
+
+        sessionStorage.setItem(
+            'mensajeRegistroExitoso',
+            'Registro exitoso con Google. Revisa tu correo para activar tu cuenta.'
+        );
+        setTimeout(() => location.href = '/html/usuario/inicioSesion.html', 1000);
+
+    } catch (error) {
+        mostrarMensaje('No se pudo conectar al servidor', 'error', 'contenedor-mensajes');
+    }
+}
+
+
+// Registro local
+async function registrarLocal(cedula, telefono, correo, contrasenna) {
+    try {
+        // Enviar los datos al backend para el registro local
+        const response = await fetch(`${apiBaseUrl}/api/autenticacion`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cedula, telefono, correo, contrasenna })
+        });
+
+        const data = await response.json();
+
+        // Si la respuesta no es exitosa, muestra el mensaje de error
+        if (!response.ok) {
+            mostrarMensaje(data.message || 'No se pudo registrar el usuario', 'error', 'contenedor-mensajes');
+            return;
+        }
+
+        sessionStorage.setItem(
+            'mensajeRegistroExitoso',
+            'Registro exitoso. Revisa tu correo para activar tu cuenta.'
+        );
+        setTimeout(() => location.href = '/html/usuario/inicioSesion.html', 1000);
+
+    } catch (error) {
+        mostrarMensaje('No se pudo conectar al servidor', 'error', 'contenedor-mensajes');
+    }
+}
+
+// Función principal para manejar el registro del usuario
+async function registrarUsuario() {
+    const modoGoogle = document.getElementById('modoGoogle').value === 'true';
+
     const cedula = document.getElementById('cedula').value.trim();
     const nombre = document.getElementById('nombre').value.trim();
     const primerApellido = document.getElementById('primerApellido').value.trim();
@@ -112,132 +236,25 @@ async function registrarUsuario() {
     const correo = document.getElementById('correo').value.trim();
     const contrasenna = document.getElementById('contrasenna').value.trim();
 
-    // Verifica que todos los campos estén completos
+    // Validar campos generales
     if (!cedula || !nombre || !primerApellido || !segundoApellido || !telefono) {
         mostrarMensaje('Debes completar todos los campos', 'error', 'contenedor-mensajes');
         return;
     }
 
-     // Verifica que la cédula tenga exactamente 9 dígitos
-    const regexCedula = /^\d{9}$/;
-    if (!regexCedula.test(cedula)) {
-        mostrarMensaje('La cédula debe tener exactamente 9 dígitos', 'error', 'contenedor-mensajes');
-        return;
-    }
+    // Usar la función de validación 
+    const valido = validarCampos({ cedula, telefono, correo, contrasenna, modoGoogle });
+    // Si la validación es false, se detiene el proceso de registro
+    if (!valido) return;
 
-    // Verifica que el teléfono tenga al menos 8 dígitos
-    const regexTelefono = /^[0-9]{8,}$/;
-    if (!regexTelefono.test(telefono)) {
-        mostrarMensaje('El teléfono debe tener al menos 8 dígitos', 'error', 'contenedor-mensajes');
-        return;
-    }
-
-    // Si se usa Google, valida que la credencial de Google esté disponible
+    // Decide el flujo
     if (modoGoogle) {
-        if (!googleCredentialTemp) {
-            mostrarMensaje('Primero debes registrarte con Google', 'error', 'contenedor-mensajes');
-            return;
-        }
-
-        try {
-            // Realiza una solicitud para registrar el usuario con Google
-            const response = await fetch(`${apiBaseUrl}/api/autenticacion/google`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    credential: googleCredentialTemp,
-                    cedula,
-                    telefono
-                })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                mostrarMensaje(data.message || 'No se pudo registrar con Google', 'error', 'contenedor-mensajes');
-                return;
-            }
-
-            // Muestra mensaje de éxito y redirige a la página de inicio de sesión
-            sessionStorage.setItem(
-                'mensajeRegistroExitoso',
-                'Registro exitoso con Google. Revisa tu correo para activar tu cuenta.'
-            );
-            setTimeout(() => {
-                location.href = '/html/usuario/inicioSesion.html';
-            }, 1000);
-
-        } catch (error) {
-            mostrarMensaje('No se pudo conectar al servidor', 'error', 'contenedor-mensajes');
-        }
-
-        return;
-    }
-
-    // Si no se usa Google, valida los campos de correo y contraseña
-    if (!correo || !contrasenna) {
-        mostrarMensaje('Todos los campos son obligatorios', 'error', 'contenedor-mensajes');
-        return;
-    }
-
-    // Valida el formato del correo
-    const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regexCorreo.test(correo)) {
-        mostrarMensaje('El formato del correo no es válido', 'error', 'contenedor-mensajes');
-        return;
-    }
-
-    // Valida la fortaleza de la contraseña
-    const tieneMin = /[a-z]/.test(contrasenna);
-    const tieneMay = /[A-Z]/.test(contrasenna);
-    const tieneNumero = /\d/.test(contrasenna);
-    const tieneEspecial = /[@$!%*?&.#_-]/.test(contrasenna);
-    const largoMinimo = contrasenna.length >= 8;
-
-    if (!(tieneMin && tieneMay && tieneNumero && tieneEspecial && largoMinimo)) {
-        mostrarMensaje(
-            'La contraseña debe tener mínimo 8 caracteres, mayúscula, minúscula, número y carácter especial.',
-            'error',
-            'contenedor-mensajes'
-        );
-        return;
-    }
-
-    try {
-        const response = await fetch(`${apiBaseUrl}/api/autenticacion`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                cedula,
-                telefono,
-                correo,
-                contrasenna
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            mostrarMensaje(data.message || 'No se pudo registrar el usuario', 'error', 'contenedor-mensajes');
-            return;
-        }
-
-       // Muestra mensaje de éxito y redirige a la página de inicio de sesión
-        sessionStorage.setItem(
-            'mensajeRegistroExitoso',
-            'Registro exitoso. Revisa tu correo para activar tu cuenta.'
-        );
-
-        setTimeout(() => {
-            location.href = '/html/usuario/inicioSesion.html';
-        }, 1000);
-
-    } catch (error) {
-        mostrarMensaje('No se pudo conectar al servidor', 'error', 'contenedor-mensajes');
+        await registrarConGoogle(cedula, telefono);
+    } else {
+        await registrarLocal(cedula, telefono, correo, contrasenna);
     }
 }
+
+
+
 
