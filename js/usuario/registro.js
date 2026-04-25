@@ -10,16 +10,21 @@ function activarModoGoogle() {
     document.getElementById('correo').value = '';
     document.getElementById('contrasenna').value = '';
 
-     // Oculta el bloque de credenciales tradicionales (correo y contraseña)
+    // Oculta los campos de credenciales tradicionales (correo y contraseña)
     document.getElementById('bloqueCredenciales').style.display = 'none';
 
-    // Muestra un mensaje informando que se ha seleccionado Google
+    // Extrae el correo electrónico de googleCredentialTemp
+    const correoGoogle = googleCredentialTemp && googleCredentialTemp.email ? googleCredentialTemp.email : 'Cuenta no disponible';
+
+    
     mostrarMensaje(
-        'Cuenta de Google seleccionada. Ahora consulta la cédula y completa el teléfono para finalizar el registro.',
+        `Cuenta seleccionada ${correoGoogle}. 
+        Ahora consulta la cédula y completa el teléfono para finalizar el registro.`,
         'success',
         'contenedor-mensajes'
     );
 }
+
 
 // Función para consultar la cédula y obtener los datos asociados desde el padrón
 async function consultarCedula() {
@@ -212,14 +217,22 @@ async function registrarUsuario() {
     }
 }
 
-// Función para manejar la respuesta del registro con Google
+// Función que maneja la respuesta de Google
 function handleGoogleRegisterResponse(response) {
+    console.log('Respuesta de Google:', response);  // Verifica que se recibe la respuesta correctamente
+
     if (!response || !response.credential) {
+        console.log('No se recibió la credencial de Google');
         mostrarMensaje('No se recibió la credencial de Google', 'error', 'contenedor-mensajes');
-        return;
+        return;  // Si no se recibió la credencial, salimos de la función
     }
 
-    // Almacena la credencial de Google temporalmente y activa el modo de Google
-    googleCredentialTemp = response.credential;
+    // Decodifica la credencial de Google
+    const decodedCredential = jwt_decode(response.credential);
+
+    // Asigna el correo de Google a googleCredentialTemp
+    googleCredentialTemp = decodedCredential;
+
+    // Llama a la función para activar el registro con Google
     activarModoGoogle();
 }
