@@ -5,6 +5,13 @@ const apiBaseUrl = 'http://localhost:3001';
 window.onload = () => {
     const mensaje = sessionStorage.getItem('mensajeRegistroExitoso');
 
+    const mensajeSesion = sessionStorage.getItem('mensajeSesion');
+
+    if (mensajeSesion) {
+        mostrarMensaje(mensajeSesion, 'error', 'contenedor-mensajes');
+        sessionStorage.removeItem('mensajeSesion');
+    }
+
     // Si el mensaje existe, lo muestra y luego lo elimina
     if (mensaje) {
         mostrarMensaje(mensaje, 'success', 'contenedor-mensajes');

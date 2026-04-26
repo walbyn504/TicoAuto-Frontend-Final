@@ -9,12 +9,14 @@ async function initVehiculo() {
 
     // Verifica si el usuario está autenticado
     if (!token) {
-        mostrarMensaje("Debe iniciar sesión", "error", "mensaje-form-vehiculo");
+        const mensaje = "Debe iniciar sesión.";
 
-        // Redirige al usuario al inicio de sesión después de 2.5 segundos
+        // Guardar el mensaje en sessionStorage
+        sessionStorage.setItem("mensajeSesion", mensaje);
+
         setTimeout(() => {
-            location.href = "/html/usuario/inicioSesion.html";
-        }, 2500);
+            location.replace("/html/usuario/inicioSesion.html");
+        }, 0); // 0 milisegundos para forzar la redirección inmediata
         return;
     }
 
