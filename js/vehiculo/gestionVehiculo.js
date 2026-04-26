@@ -25,10 +25,15 @@ async function obtenerVehiculos() {
 
      // Si no hay token, redirige al usuario al inicio de sesión
     if (!token) {
-        mostrarMensaje("Debe iniciar sesión.", "error", "mensaje-gestion-vehiculo");
+        const mensaje = "Debe iniciar sesión.";
+
+        // Guardar el mensaje en sessionStorage
+        sessionStorage.setItem("mensajeSesion", mensaje);
+
         setTimeout(() => {
-            location.href = "/html/usuario/inicioSesion.html";
-        }, 2000);
+            location.replace("/html/usuario/inicioSesion.html");
+        }, 0); // 0 milisegundos para forzar la redirección inmediata
+
         return;
     }
 
