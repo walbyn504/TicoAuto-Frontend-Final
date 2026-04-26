@@ -50,11 +50,6 @@ async function obtenerVehiculos() {
                     condicion
                     usuario {
                         id
-                        nombre
-                        primerApellido
-                        segundoApellido
-                        correo
-                        telefono
                     }
                 }
             }
