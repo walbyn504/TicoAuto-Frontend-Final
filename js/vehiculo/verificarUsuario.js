@@ -74,7 +74,7 @@ function verificarUsuario() {
                 </button>
 
                 <a href="/html/vehiculo/gestionVehiculo.html" class="nav-btn btn-gestion">
-                    <i class="bi bi-gear"></i> Gestión
+                    <i class="bi bi-gear"></i> Gestión Vehículos
                 </a>
 
                 <a href="/html/conversacion/conversacion.html" class="nav-btn btn-chat">
@@ -85,7 +85,7 @@ function verificarUsuario() {
         else {
             menuCont.innerHTML = `
                 <a href="/html/vehiculo/gestionVehiculo.html" class="nav-btn btn-gestion">
-                    <i class="bi bi-gear"></i> Gestión
+                    <i class="bi bi-gear"></i> Gestión Vehículos
                 </a>
 
                 <a href="/html/conversacion/conversacion.html" class="nav-btn btn-chat">
