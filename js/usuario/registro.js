@@ -256,5 +256,14 @@ async function registrarUsuario() {
 }
 
 
+function mostrarOcultarContrasenna() {
+  const i = document.getElementById("contrasenna");
+  const icon = document.getElementById("icono");
+  i.type = i.type === "password" ? "text" : "password";
+  icon.classList.toggle("bi-eye");
+  icon.classList.toggle("bi-eye-slash");
+}
+
+
 
 
