@@ -14,7 +14,7 @@ window.onload = () => {
 
     // Si no hay un ID de usuario o la fecha de expiración es inválida, redirige al inicio de sesión
     if (!usuarioId || !exp) {
-        location.href = 'inicioSesion.html';
+        location.href = '/html/usuario/inicioSesion.html';
         return;
     }
 
@@ -22,7 +22,7 @@ window.onload = () => {
 
     // Si la fecha de expiración es inválida, redirige al inicio de sesión
     if (isNaN(fechaExpiracionReal.getTime())) {
-        location.href = 'inicioSesion.html';
+        location.href = '/html/usuario/inicioSesion.html';
         return;
     }
 
@@ -64,7 +64,6 @@ function actualizarContador() {
 
     // Muestra el tiempo restante en el formato "minutos:segundos"
     contador.textContent = `El código expira en: ${minutos}:${segundos.toString().padStart(2, '0')}`;
-    contador.classList.remove('text-secondary');
     contador.classList.add('text-danger'); // Muestra el contador en rojo
     boton.disabled = false; // Habilita el botón de verificación
 }
@@ -126,7 +125,7 @@ async function verificarCodigo() {
 }
 
 function cerrar2FA() {
-    location.href = 'inicioSesion.html';
+    location.href = '/html/usuario/inicioSesion.html';
 }
 
 // Muestra el estado de expiración del código cuando el tiempo ha pasado
