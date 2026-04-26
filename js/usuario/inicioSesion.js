@@ -103,3 +103,12 @@ async function handleGoogleLoginResponse(response) {
         mostrarMensaje("No se pudo conectar al servidor", 'error', "contenedor-mensajes");
     }
 }
+
+
+function mostrarOcultarContrasenna() {
+  const i = document.getElementById("contrasenna");
+  const icon = document.getElementById("icono");
+  i.type = i.type === "password" ? "text" : "password";
+  icon.classList.toggle("bi-eye");
+  icon.classList.toggle("bi-eye-slash");
+}

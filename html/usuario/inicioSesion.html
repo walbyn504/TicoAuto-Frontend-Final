@@ -39,8 +39,14 @@
 
             <input type="email" id="correo" class="form-control input-auto mb-3" placeholder="Correo Electrónico">
 
-            <input type="password" id="contrasenna" class="form-control input-auto mb-3" placeholder="Contraseña"
-                autocomplete="new-password">
+            <div class="input-group mb-3">
+                <input type="password" id="contrasenna" class="form-control input-auto" placeholder="Contraseña"
+                    autocomplete="new-password">
+
+                <span class="input-group-text" onclick="mostrarOcultarContrasenna()" style="cursor:pointer;">
+                    <i id="icono" class="bi bi-eye"></i>
+                </span>
+            </div>
 
             <!-- Botón para inicio sesión -->
             <div class="d-grid gap-2 mb-3">
