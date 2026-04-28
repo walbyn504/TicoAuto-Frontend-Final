@@ -30,7 +30,7 @@ async function cargarConversaciones() {
         `;
 
         // Realiza la solicitud a la API GraphQL
-        const response = await fetch(`${apiBaseUrl}/graphql`, {
+        const response = await fetch(`${graphqlBaseUrl}/graphql`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

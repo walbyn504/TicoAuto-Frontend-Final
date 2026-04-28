@@ -65,7 +65,7 @@ async function obtenerVehiculo(vehiculoId) {
         `;
 
         // Si la respuesta no es exitosa, retorna null
-        const response = await fetch(`${apiBaseUrl}/graphql`, {
+        const response = await fetch(`${graphqlBaseUrl}/graphql`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
