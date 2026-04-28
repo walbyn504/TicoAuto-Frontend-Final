@@ -83,7 +83,7 @@ async function ejecutarBusqueda(page = paginaActual) {
             }
         `;
 
-        const response = await fetch(`${apiBaseUrl}/graphql`, {
+        const response = await fetch(`${graphqlBaseUrl}/graphql`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
