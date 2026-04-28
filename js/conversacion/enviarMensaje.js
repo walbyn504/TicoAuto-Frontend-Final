@@ -1,5 +1,6 @@
 // Maneja el envío de mensajes en la conevrsación, tanto preguntas como respuestas
 const apiBaseUrl = "http://localhost:3001";
+const graphqlBaseUrl = "http://localhost:4000";
 const token = sessionStorage.getItem("token");
 
 const params = new URLSearchParams(window.location.search); // Obtiene el parámetro "vehiculoId" de la URL
