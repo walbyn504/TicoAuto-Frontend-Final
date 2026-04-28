@@ -1,5 +1,3 @@
-const apiBaseUrl = 'http://localhost:3001';
-const token = sessionStorage.getItem('token');
 
 
 // --- Función principal: inicializa la página ---
@@ -54,7 +52,7 @@ async function cargarVehiculo(id) {
         `;
 
          // Realiza la solicitud a la API GraphQL para obtener el vehículo
-        const response = await fetch(`${apiBaseUrl}/graphql`, {
+        const response = await fetch(`${graphqlBaseUrl}/graphql`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
