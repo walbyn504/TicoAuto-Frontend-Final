@@ -14,30 +14,26 @@ El frontend está construido utilizando **HTML**, **CSS**, **JavaScript**, y **B
 - **CSS3**: Estilos para dar diseño a la interfaz de usuario.
 - **JavaScript**: Lógica para manejar las interacciones y la comunicación con la API.
 - **Bootstrap 5**: Framework CSS para diseño responsivo y componentes predefinidos.
-- **Font Awesome**: Conjunto de iconos para mejorar la UI.
 - **GraphQL**: API para realizar consultas de vehículos, preguntas y respuestas.
-- **SendGrid API**: Para el envío de correos electrónicos de verificación de cuenta.
-- **Twilio API**: Para el envío de mensajes SMS para la autenticación de dos factores (2FA).
+- **REST**: API para la comunicación con el backend para operaciones principales (crear, editar y eliminar).
 - **Google OAuth2**: Para la autenticación de usuarios mediante sus cuentas de Google.
-- **Socket.IO**: Para la implementación del **chat en tiempo real** entre los usuarios.
 
-Estas tecnologías permiten desarrollar una interfaz web dinámica y responsiva que se comunica con el backend mediante solicitudes HTTP y **GraphQL** para obtener y manipular los datos de vehículos, preguntas, respuestas y más.
 
 ---
 
-## Características principales
+## Funcionalidades principales
 
 ### 1. **Autenticación de Usuario**
 
 - **Registro de usuario**:
   - Los usuarios pueden registrarse proporcionando **correo electrónico**, **nombre**, **cédula** (validada a través de un servicio de padrón), **teléfono** y **contraseña**.
-  - Los usuarios que se registran con **correo y contraseña** deben pasar por una **autenticación de dos factores (2FA)**. Se enviará un **código SMS** al número de teléfono para completar el registro o inicio de sesión.
-  - Los usuarios también pueden registrarse mediante **Google OAuth2**. En este caso, **2FA** no es necesario, pero siempre está habilitada en el backend.
+  - Los usuarios también pueden registrarse mediante **Google OAuth2** a traves de sus cuentas registradas en Google.
+  - Una vez registrado, recibirá un correo para activar la cuenta y poder ingresar por primera vez.
 
 - **Inicio de sesión**:
   - Los usuarios pueden iniciar sesión utilizando **correo y contraseña**, o utilizando **Google OAuth2**.
   - Si el inicio de sesión es con **correo y contraseña**, se enviará un **código de verificación por SMS** para completar el inicio de sesión.
-  - Si el inicio de sesión es con **Google OAuth2**, no se requiere 2FA.
+  - Si el inicio de sesión es con **Google OAuth2**, no se requiere código de verificación.
 
 ### 2. **Gestión de Vehículos**
 
@@ -51,8 +47,8 @@ Estas tecnologías permiten desarrollar una interfaz web dinámica y responsiva 
 ### 3. **Sistema de Preguntas y Respuestas**
 
 - Los usuarios pueden **hacer preguntas** sobre los vehículos y los propietarios pueden **responder** a esas preguntas.
-- El sistema de **chat** permite a los usuarios interactuar directamente con los propietarios de los vehículos, haciendo preguntas y recibiendo respuestas. Esta funcionalidad fomenta la **comunicación directa** entre compradores y vendedores.
-- **Visualización de preguntas y respuestas**: Las preguntas y respuestas se muestran asociadas a cada vehículo y son visibles para otros usuarios interesados.
+- El sistema de **chat** permite a los usuarios interactuar directamente con los propietarios de los vehículos, haciendo preguntas y recibiendo respuestas. 
+- **Visualización de preguntas y respuestas**: Las preguntas y respuestas se muestran asociadas a cada vehículo.
 
 ### 4. **Filtros de Búsqueda y Paginación**
 
@@ -67,31 +63,26 @@ Estas tecnologías permiten desarrollar una interfaz web dinámica y responsiva 
 - **Paginación**:
   - Los resultados de la búsqueda están **paginados**. Se muestra una cantidad limitada de vehículos por página, y los usuarios pueden navegar entre las páginas de resultados.
 
-### 5. **Autenticación de dos factores (2FA)**
-
-- **Usuarios con correo y contraseña**: Al iniciar sesión, se enviará un código de verificación por SMS al número de teléfono proporcionado por el usuario. Este código debe ser ingresado para completar el proceso de autenticación.
-- **Usuarios con Google OAuth2**: La 2FA no se aplica, pero siempre está habilitada en el sistema.
 
 ---
 
 ## Flujo de Usuario
 
-### **1. Registro de Usuario**
-- El usuario proporciona su **correo**, **nombre**, **cédula**, **teléfono** y **contraseña**.
-- Si se registran con **correo y contraseña**, el sistema valida la **edad** del usuario utilizando la **cédula** y envía un **código de verificación por SMS** (2FA).
-- Los usuarios también pueden registrarse a través de **Google OAuth2**, en cuyo caso la **2FA** no es necesaria.
+1. Registrarse en la plataforma (Google o correo y constraseña).
+2. Activar cuenta mediante link enviado al correo (cuando ingresa por primera vez).
+3. Iniciar sesión con google o correo y contraseña (este último aplica 2FA - mensajes de texto con un código).
+4. Ingresa a la pantalla principal donde muestra los vehículos publicados con las opciones de ver detalle, copiar enlace y enviar mensaje.
 
-### **2. Inicio de sesión**
-- Los usuarios pueden iniciar sesión con **correo y contraseña** o con **Google OAuth2**.
-- Si el inicio de sesión es con **correo y contraseña**, el sistema verifica la **credencial** y envía un **código de verificación por SMS** para completar el inicio de sesión.
+- **Ver detalle:** muestra las características del vehículo y datos del dueño.
+- **Copiar enlace:** permite enviar información de un vehículo a otro usuario.
+- **Enviar mensaje:** inicia o continua la conversación relacionada al vehículo.
 
-### **3. Gestión de Vehículos**
-- Los usuarios pueden **publicar vehículos** proporcionando los detalles necesarios.
-- Pueden **consultar vehículos**, **editar** o **eliminar** los que hayan publicado y **marcar como vendidos** aquellos que ya no están disponibles para la compra.
+5. En la opción de gestión vehículo puede crear, editar, eliminar o marcar como vendido.
+6. En la opción de chat puede observar las conversaciones con otros usuarios, tanto preguntas como respuestas.
+7. Finalmente, puede salirse, dando clic en cerrar sesión.
 
-### **4. Sistema de Preguntas y Respuestas**
-- Los usuarios pueden **hacer preguntas** sobre los vehículos, y los **propietarios** pueden **responder**.
-- El chat está disponible en la página de cada vehículo para una comunicación fácil entre los compradores y vendedores.
+
+***Los usuarios no logueados, solo podrán ver los vehículos publicados con información básica y copiar enlace para compartir.***
 
 ---
 
